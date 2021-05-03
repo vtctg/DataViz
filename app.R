@@ -7,7 +7,7 @@ ui <- dashboardPage(
   ## Sidebar content
   dashboardSidebar(
     sidebarMenu(
-      menuItem("Home", tabName = "home", icon = icon("home")),
+      menuItem("Overview", tabName = "home", icon = icon("home")),
       menuItem("Temperature Statistics", tabName = "stats", icon = icon("poll")),
       menuItem("Causes of Global Warming", tabName = "causes", icon = icon("smoking"),
                menuItem("Greenhouse gases", tabName = "ggas")),

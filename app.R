@@ -1,11 +1,10 @@
 library(shiny)
 library(shinydashboard)
-library(shiny)
-library(shinydashboard)
 library(plotly)
 library(ggplot2)
 library(dplyr)
 library(readr)
+
 
 oDs <- read_csv("ozone-depleting-substance-emissions .csv")
 ggas = read_csv("gastrend.csv")
@@ -23,8 +22,9 @@ ozone_gwp <- read_csv("ozone_gwp2.csv")
 Soc = read_csv("stratospheric-ozone-concentration.csv")
 aHa <- read_csv("antarctic-ozone-hole-area.csv")
 
+
 ui <- dashboardPage(
-  dashboardHeader(title = "Global Warming Dashboard"),
+  dashboardHeader(title = "Global Warming"),
   
   ## Sidebar content
   dashboardSidebar(
@@ -32,7 +32,7 @@ ui <- dashboardPage(
       menuItem("Overview", tabName = "home", icon = icon("home")),
       menuItem("Temperature Statistics", tabName = "stats", icon = icon("poll")),
       menuItem("Causes of Global Warming", tabName = "causes", icon = icon("smoking"),
-               menuItem("Greenhouse gases", tabName = "ggas")),
+               menuItem("Greenhouse gases", tabName = "ggas"),
                menuItem("Ozone layer depletion", tabName = "oLd")),
       menuItem("Effects of Global Warming", tabName = "effects", icon = icon("temperature-high")),
       menuItem("How Can The World Help?", tabName = "measures", icon = icon("info-circle"))
@@ -43,10 +43,13 @@ ui <- dashboardPage(
       tabItem(tabName = "home",
               h2("Welcome To Our Global warming Data Visualization and Analysis"),
               br(),
+              
               p("You can view various data and analysis by clicking different tabs on the left side. You can also continue reading for some basic information and background of global warming.")
       ),
       
       tabItem(tabName = "stats",),
+      
+      tabItem(tabName = "causes",),
       
       tabItem(tabName = "oLd",
               
@@ -152,8 +155,10 @@ ui <- dashboardPage(
               
               
       ),
+
       
-      tabItem(tabName = "effects",),
+
+      tabItem(tabName = "effects"),
       
       tabItem(tabName = "measures",)
               
@@ -161,7 +166,7 @@ ui <- dashboardPage(
   )
 )
 
-server <- function(input, output) { }
+server <- function(input, output) {
       output$ggas1 = renderPlotly(ggplotly(ggplot(data=ggas, aes_string(x="date", y=input$GasTrendGroup)) + geom_line() + labs(x="Year", title = "Annual mean of the gas concentration at the atmosphere") + theme_light() + geom_smooth(color = "#FF000088")))
       output$ggas2 = renderPlotly(ggplotly(ggplot(data=ggas2, aes_string(x="year", y=input$GasTrendGroup)) + geom_line() + labs(x="Year",title = "Annual growth rate of the gas concentration at the atmosphere") + theme_light() + geom_smooth(color = "#FF000088")))
       output$gaspro1 = renderPlotly(plot_ly(data=ghgpro, labels=~X1, values=as.vector(unlist(ghgpro[,input$GasTrendYear-1988])), type = "pie") %>% layout(title = "Breakdown of greenhouse gas emission by industrial sectors",showlegend = TRUE, legend = list(font = list(size = 10))))
@@ -171,4 +176,6 @@ server <- function(input, output) { }
       output$foodGh = renderPlotly(plot_ly(data=food[food$Area==input$FoodCountr,],labels=~`Food Stage`, values=~Emission, type = "pie", name = "Food Stage", domain = list(row=0,column=0),textinfo='label+percent') %>% add_pie(data=food[food$Area==input$FoodCountr,],labels=~`Food compartment`, values=~emission, name = "Food Compartment", domain = list(row=0,column=1),textinfo='label+percent') %>% layout(title = "Breakdown of greenhouse gas emission in food system", showlegend = F,grid=list(rows=1, columns=2), xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE)))
       output$foodGh2 = renderText(paste("The total emission of greenhouse gases is", sum(food[food$Area==input$FoodCountr,]$Emission), "billion tonnes equivalent of CO2."))
       output$OZ1 = renderPlotly(ggplotly(ggplot(ozone_gwp, aes_string(x="Gas", y=input$OZi, fill="Type")) + geom_bar(stat="identity") + scale_x_discrete(limits = ozone_gwp$Gas) + theme_grey()))
+}
+
 shinyApp(ui, server)

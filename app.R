@@ -53,18 +53,25 @@ ui <- dashboardPage(
     )
   ),
   dashboardBody(
+    
+    tags$head(tags$style(HTML('
+      .main-header .logo {
+        font-family: "Georgia", Times, "Times New Roman", serif;
+        font-weight: bold;
+      }
+    '))),
 
     tabItems(
       tabItem(tabName = "home",
-              fluidRow(box(background = "purple",width=12,h1(strong("Welcome To Our Global Warming Data Visualization and Analysis", style = "font-family:'times'")),
+              fluidRow(box(background = "purple",width=12,h1(strong(" Welcome To Our Global Warming Data Visualization and Analysis", style = "font-family:'times'")),
                   br(),
-                  h4("The below are some descriptions about each section of this app. You can view various data and analysis by clicking the tabs on the left side."))),
+                  h4(" The below are some descriptions about each section of this app. You can view various data and analysis by clicking the tabs on the left side."))),
               br(),
-              fluidRow(infoBox(color="green", fill = T, width=7, h3(strong("Overview", style="font-family:'Verdana'")), "General statistics, correlation graphs and geographical data", icon = icon("poll"))),
-              fluidRow(infoBox(color="navy", fill=T, width=6, h3(strong("Causes of Global Warming", style="font-family:'Verdana'")), "Visualization and analysis of the problems brought by global warming", icon = icon("smoking"))
+              fluidRow(infoBox(color="green", fill = T, width=7, h3(strong(" Overview", style="font-family:'Verdana'")), " General statistics, correlation graphs and geographical data", icon = icon("poll"))),
+              fluidRow(infoBox(color="navy", fill=T, width=7, h3(strong(" Causes of Global Warming", style="font-family:'Verdana'")), " Visualization and analysis of the problems brought by global warming", icon = icon("smoking"))
               ),
-              fluidRow(infoBox(color="yellow", fill = T, width=7, h3(strong("Effects of Global Warming", style="font-family:'Verdana'")), "General statistics, correlation graphs and geographical data", icon = icon("poll"))),
-              fluidRow(infoBox(color="fuchsia", fill=T, width=6, h3(strong("Helping Initiatives", style="font-family:'Verdana'")), "Explores the effect of global agreements on global warming", icon = icon("smoking"))
+              fluidRow(infoBox(color="yellow", fill = T, width=7, h3(strong(" Effects of Global Warming", style="font-family:'Verdana'")), " General statistics, correlation graphs and geographical data", icon = icon("poll"))),
+              fluidRow(infoBox(color="fuchsia", fill=T, width=7, h3(strong(" Helping Initiatives", style="font-family:'Verdana'")), " Explores the effect of global agreements on global warming", icon = icon("smoking"))
               )
       ),
       

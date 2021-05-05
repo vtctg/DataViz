@@ -59,6 +59,9 @@ ui <- dashboardPage(
         font-family: "Georgia", Times, "Times New Roman", serif;
         font-weight: bold;
       }
+      .content-wrapper, .right-side {
+        background-color: #7da2d1;
+      }      
     '))),
 
     tabItems(

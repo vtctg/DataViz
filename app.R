@@ -252,7 +252,6 @@ ui <- dashboardPage(
       ),
       
       
-      
       tabItem(tabName = "effects",
               h2("Exploring the Effects of Global Warming"),
               h3("Are global ice levels declining?"),
@@ -276,6 +275,21 @@ ui <- dashboardPage(
                      h6("Source: National Climatic Data Center. 2021. Snow and Ice - National Climatic Data Center. 
                         https://www.ncdc.noaa.gov/snow-and-ice/")
               ),
+              
+              fluidRow(
+                tabBox(selected="Arctic Ice Loss Timelapse",
+                       tabPanel("Arctic Ice Loss Timelapse", img(src="Arctic_ice_loss.gif", width=350, height=250), align="center"),
+                       tabPanel("Arctic Ice Loss Result", img(src="Arctic_ice_loss_result.jpg", width=400, height=250), align="center"),
+                       h6("Source: NASA. 2021. Climate Change: Vital Signs of the Planet - NASA/Trent Schindler & NASA/Goddard.
+                          http://climate.nasa.gov/")
+                ),
+                box(
+                  img(src="polarbear.jpg", width=500, height=300), align="center",
+                  h6("Source: Salt Lake City Weekly. 2021. What Global Warming? - Paul Rosenburg.
+                     https://www.cityweekly.net/utah/what-global-warming/Content?oid=7516264")
+                )
+              ),
+              
               h3("Are sea temperatures rising?"),
               p("The seas are warming up too. We can observe changes in the sea surface temperatures."),
               fluidRow(
@@ -297,15 +311,24 @@ ui <- dashboardPage(
                 )),
               h3("Ice Melting, Temperatures Warming, Sea Levels Rising"),
               fluidRow(
-                box(status = "primary",title = "Info", solidHeader = T, 
+                box(status = "primary",title = "Our Verdict", solidHeader = T, 
                     h4("The graph on the right shows upward trends of sea levels."),
                     h4("Due to the melting of ice around the globe, more water is being added to the sea."),
                     h4("Another factor to consider is thermal expansion. As the sea temperature rises, so does its volume."),
-                    h4("This is a rising issue as it would devestate coastal habitats with flooding and erosion, destroying homes of people, animals, and plants alike."),
+                    h4("This is a rising issue as it would also devestate coastal habitats with flooding and erosion, destroying homes of people, animals, and plants alike."),
                     br(),
                     h5("*Sea level is measured in milimeters of the tide via tide gauge stations")),
                 box(plotlyOutput("sealevelsplot"),
                     h6("Source: Permanent Service for Mean Sea Level.2021. Obtaining Tide Gauge Data - PSMSL.https://www.psmsl.org/data/obtaining/"))
+              ),
+              fluidRow(
+                box(img(src="statue_drown.jpg"), align="center"),
+                box(status="primary", title="What's to Come?", solidHeader=T,
+                    h4("SROCC (The Special Report on the Ocean and Ctyosphere in a Changing Climate from September 2019 by IPCC (Intergovernmental Panel on Climate Change)
+                       project that the annual mean sea level in Hong Kong and adjacent waters (including vertical displacement from tectonic movement)
+                       is expected to rise by 0.73 - 1.28 meters, relative to the 1986-2005 mean."),
+                    br(),
+                    h4("This would result in more frequent and intense tropical cyclones."))
               ),
               
               

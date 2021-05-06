@@ -6,6 +6,10 @@ library(ggplot2)
 library(dplyr)
 library(readr)
 library(ggthemes)
+library(tidyverse)
+library(gridExtra)
+library(stats)
+library(ggpubr)
 
 
 oDs <- read_csv("ozone-depleting-substance-emissions .csv")

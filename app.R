@@ -77,8 +77,8 @@ ui <- dashboardPage(
               fluidRow(infoBox(color="green", fill = T, width=7, h3(strong(" Overview", style="font-family:'Verdana'")), " General statistics, correlation graphs and geographical data", icon = icon("poll"))),
               fluidRow(infoBox(color="navy", fill=T, width=7, h3(strong(" Causes of Global Warming", style="font-family:'Verdana'")), " Visualization and analysis of the problems brought by global warming", icon = icon("smoking"))
               ),
-              fluidRow(infoBox(color="yellow", fill = T, width=7, h3(strong(" Effects of Global Warming", style="font-family:'Verdana'")), " General statistics, correlation graphs and geographical data", icon = icon("poll"))),
-              fluidRow(infoBox(color="fuchsia", fill=T, width=7, h3(strong(" Helping Initiatives", style="font-family:'Verdana'")), " Explores the effect of global agreements on global warming", icon = icon("smoking"))
+              fluidRow(infoBox(color="yellow", fill = T, width=7, h3(strong(" Effects of Global Warming", style="font-family:'Verdana'")), " General statistics, correlation graphs and geographical data", icon = icon("temperature-high"))),
+              fluidRow(infoBox(color="fuchsia", fill=T, width=7, h3(strong(" Helping Initiatives", style="font-family:'Verdana'")), " Explores the effect of global agreements on global warming", icon = icon("info-circle"))
               )
       ),
       
@@ -118,6 +118,8 @@ ui <- dashboardPage(
       ),
       
       tabItem(tabName = "OvCau",
+              h1("Some Scientific Concepts...", style = "color:yellow;"),
+              br(),
               fluidRow(box(background="light-blue", title = strong("Greenhouse Effect",style="font-family:'Verdana'"),HTML('<center><img src="greenhouse-effect_med.jpeg" width="715" height="500"></center>'),
                            br(),
                            h5("Image Source: https://ib.bioninja.com.au/standard-level/topic-4-ecology/44-climate-change/greenhouse-effect.html")),
@@ -135,7 +137,9 @@ ui <- dashboardPage(
       ),
       
       tabItem(tabName = "oLd",
-              
+              h1("Ozone Depletion", style = "color:yellow;"),
+              h4(em(" - Not so big, not too small, still a worthwhile antagonist",style = "color:yellow;")),
+              br(),
               fluidRow(
                 box(status="warning",ggplotly(ggplot(data=oDs,aes(x=Year,y=`Ozone-depleting substance emissions`, color=Source)) + geom_line() + theme_light() + labs(title="Ozone-depleting substances emissions", y = "tonnes CFC11-equivalents")),
                     h6("Source: Hegglin, M. I., Fahey, D. W., McFarland, M., Montzka, S. A., & Nash, E. R. 2018. Twenty questions and answers about the ozone layer. World Meteorological Organization, UNEP, NOAA, NASA, and European Commission.")),
@@ -163,7 +167,7 @@ ui <- dashboardPage(
               
               fluidRow(box(status="danger",img(src = "jgrd15685-fig-0004.png"),
                            img(src = "jgrd15685-fig-0005.png")),
-                       box(status = "primary", title=strong("Info",style="font-family:'Verdana'"), solidHeader = T,
+                       box(status = "primary", title=strong("Irradiance, Latitude, Ozone concentration",style="font-family:'Verdana'"), solidHeader = T,
                            h4("The left graphs show the percentage change of irradiance from 1979 to 2008 by latitude. The statistics can be compared to the above two graphs of stratospheric ozone concentration and Antarctic ozone hole area."),
                            br(),
                            h5("Source: Herman, J. R. 2010. Global increase in UV irradiance during the past 30 years (1979-2008) estimated from satellite data, J. Geophys. Res., 115, D04203, doi:10.1029/2009JD012219."))
@@ -172,6 +176,9 @@ ui <- dashboardPage(
       ),
       
       tabItem(tabName = "ggas",
+              h1("Greenhouse Gases", style = "color:yellow;"),
+              h4(em(" - The main antagonist", style = "color:yellow;")),
+              br(),
               box(title=strong("Input",style="font-family:'Verdana'"),status="info",solidHeader = TRUE,
                   h4("The right graphs show the annual growth mean and growth rate of the concentration of various greenhouse gases."),
                   h4("Note that the scale of measurement is different for each gas."),
@@ -199,7 +206,7 @@ ui <- dashboardPage(
                            h6("Source: IPCC, 2014: Climate Change 2014: Synthesis Report. Contribution of Working Groups I, II and III to the Fifth Assessment Report of the Intergovernmental Panel on Climate Change. https://www.ipcc.ch/pdf/assessment-report/ar5/syr/SYR_AR5_FINAL_full.pdf")
               ),
               
-              box(status = "primary",title = strong("Info",style="font-family:'Verdana'"), solidHeader = T, h4("The left graph shows the warming effects of some gases relative to CO2 in a 100-year period. As those effects differ from one another a lot, summing up the mass of all greenhouse gases emitted may not be a suitable way to account for global warming."),
+              box(status = "primary",title = strong("Global warming potential (GWP)",style="font-family:'Verdana'"), solidHeader = T, h4("The left graph shows the warming effects of some gases relative to CO2 in a 100-year period. As those effects differ from one another a lot, summing up the mass of all greenhouse gases emitted may not be a suitable way to account for global warming."),
                   br(),
                   h4("Instead, the following sections convert the mass of each greenhouse gases to the equivalent mass of CO2 by GWP."))
               ),
@@ -222,7 +229,7 @@ ui <- dashboardPage(
               ),
               fluidRow(box(status="warning", width=7,ggplotly(ggplot(data=gpe,aes(x=year,y=value,fill=variable, color = variable)) + geom_area(alpha=.5) + labs(title = "Energy consumption breakdown by sources", y="TW h")+ theme_light() ),
                            h6("Source: Vaclav Smil. 2017. Energy Transitions: Global and National Perspectives. & BP Statistical Review of World Energy.")),
-                       box(width=5, status = "primary",title = strong("Info",style="font-family:'Verdana'"), solidHeader = T, h4("The left graph shows the distribution of energy consumption by their sources."),
+                       box(width=5, status = "primary",title = strong("Power usage",style="font-family:'Verdana'"), solidHeader = T, h4("The left graph shows the distribution of energy consumption by their sources."),
                            br(),
                            h4("The unit of measurement is Terawatt-hour."))
               ),
@@ -253,11 +260,12 @@ ui <- dashboardPage(
       
       
       tabItem(tabName = "effects",
-              h2("Exploring the Effects of Global Warming"),
-              h3("Are global ice levels declining?"),
-              p("The melting of sea ice on the Northern Hemisphere, the Southern Hemisphere, and all around the world.
-                We can observe the ice coverages on the Earth's surface."),
-              box(title="Input",status="info",solidHeader = TRUE,
+              h1("Exploring the Effects of Global Warming", style = "color:yellow;"),
+              br(),
+              h3(strong("Are global ice levels declining?", style = "font-family:'times';color:yellow;")),
+              h4("The melting of sea ice on the Northern Hemisphere, the Southern Hemisphere, and all around the world.
+                We can observe the ice coverages on the Earth's surface.", style = "font-family:'times';color:yellow;"),
+              box(title=strong("Input",style="font-family:'Verdana'"),status="info",solidHeader = TRUE,
                   radioButtons("CoverageRegion", label = "Select region:",
                                choices = list("Global" = "G",
                                               "Northern Hemisphere" = "N", 
@@ -283,22 +291,22 @@ ui <- dashboardPage(
                        h6("Source: NASA. 2021. Climate Change: Vital Signs of the Planet - NASA/Trent Schindler & NASA/Goddard.
                           http://climate.nasa.gov/")
                 ),
-                box(
+                box(status="danger",
                   img(src="polarbear.jpg", width=500, height=300), align="center",
                   h6("Source: Salt Lake City Weekly. 2021. What Global Warming? - Paul Rosenburg.
                      https://www.cityweekly.net/utah/what-global-warming/Content?oid=7516264")
                 )
               ),
               
-              h3("Are sea temperatures rising?"),
-              p("The seas are warming up too. We can observe changes in the sea surface temperatures."),
+              h3(strong("Are sea temperatures rising?", style = "font-family:'times';color:yellow;")),
+              h4("The seas are warming up too. We can observe changes in the sea surface temperatures.", style = "font-family:'times';color:yellow;"),
               fluidRow(
-                box(selected="Annual Anomalies",
+                box(status="warning",selected="Annual Anomalies",
                     tabPanel("Annual Anomalies",plotlyOutput("seatempplot")),
                     h6("Source: United States Environmental Protection Agency. 2021. Climate Change Indicators: Sea Level - EPA. 
                         https://www.epa.gov/climate-indicators/climate-change-indicators-sea-level")
                 ),
-                box(title="Input",status="info",solidHeader = TRUE,
+                box(title=strong("Input",style="font-family:'Verdana'"),status="info",solidHeader = TRUE,
                     radioButtons("TempRegion", label = "Select region:",
                                  choices = list("Global" = "G",
                                                 "Northern Hemisphere" = "N", 
@@ -309,23 +317,23 @@ ui <- dashboardPage(
                     h5("*Anomalies are relative to the 20th century (1901-2000) base period average."),
                     h5("Temperature anomalies based annually from February reports.")
                 )),
-              h3("Ice Melting, Temperatures Warming, Sea Levels Rising"),
+              h3("Ice Melting, Temperatures Warming, Sea Levels Rising", style = "font-family:'times';color:yellow;"),
               fluidRow(
-                box(status = "primary",title = "Our Verdict", solidHeader = T, 
+                box(status = "primary",title = strong("Our Verdict",style="font-family:'Verdana'"), solidHeader = T, 
                     h4("The graph on the right shows upward trends of sea levels."),
                     h4("Due to the melting of ice around the globe, more water is being added to the sea."),
                     h4("Another factor to consider is thermal expansion. As the sea temperature rises, so does its volume."),
                     h4("This is a rising issue as it would also devestate coastal habitats with flooding and erosion, destroying homes of people, animals, and plants alike."),
                     br(),
                     h5("*Sea level is measured in milimeters of the tide via tide gauge stations")),
-                box(plotlyOutput("sealevelsplot"),
+                box(status="warning",plotlyOutput("sealevelsplot"),
                     h6("Source: Permanent Service for Mean Sea Level.2021. Obtaining Tide Gauge Data - PSMSL.https://www.psmsl.org/data/obtaining/"))
               ),
               fluidRow(
-                box(img(src="storm_surge.jpg"), align="center", 
+                box(status="danger",img(src="storm_surge.jpg"), align="center", 
                     h6("Source: Hong Kong Observatory(HKO).2021. Climate Projections for Hong Kong - Mean sea level - HKO.
                        https://www.hko.gov.hk/en/climate_change/proj_hk_msl.htm")),
-                box(status="primary", title="What's to Come?", solidHeader=T,
+                box(status="primary", title=strong("What's to Come?",style="font-family:'Verdana'"), solidHeader=T,
                     h4("SROCC (The Special Report on the Ocean and Ctyosphere in a Changing Climate from September 2019 by IPCC (Intergovernmental Panel on Climate Change)
                        project that the annual mean sea level in Hong Kong and adjacent waters (including vertical displacement from tectonic movement)
                        is expected to rise by 0.73 - 1.28 meters, relative to the 1986-2005 mean."),

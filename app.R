@@ -42,6 +42,7 @@ pt1=read.csv("pt1.csv")
 pt2=read.csv("pt2.csv")
 pt3=read.csv("pt3.csv")
 pt4=read.csv("pt4.csv")
+infovalue2018 = read.csv("infovalue2018.csv")
 
 
 
@@ -66,6 +67,11 @@ ui <- dashboardPage(
                menuItem("Overview", tabName = "OvCau"),
                menuItem("Greenhouse gases", tabName = "ggas"),
                menuItem("Ozone layer depletion", tabName = "oLd")),
+      menuItem("Relationship between Country", tabName = "cluster", icon = icon("th"),
+               menuItem("Table of Country Cluster", tabName = "chtml"),
+               menuItem("PCA Analysis", tabName = "pca"),
+               menuItem("Grouping of Country", tabName = "handkpca")
+      ),
       menuItem("Effects of Global Warming", tabName = "effects", icon = icon("temperature-high")),
       menuItem("Helping Initiatives", tabName = "measures", icon = icon("info-circle"))
     )
@@ -282,6 +288,50 @@ ui <- dashboardPage(
               
       ),
       
+      tabItem(tabName = "chtml",
+              h1("Number of samples in each kmeans group", style = "color:yellow;"),
+              br(),
+              fluidPage(includeHTML("kmeanstable.html"))
+      ),
+      
+      tabItem(tabName = "pca",
+              h1("PCA on Country and Country Information", style = "color:yellow;"),
+              br(),
+              fluidRow(
+                box(status="warning",width=12, matplot(pt1,type="l",main="PC1 proj"))
+              ),
+              fluidRow(
+                box(status="warning",width=12, matplot(pt2,type="l",main="PC2 proj"))
+              ),
+              fluidRow(
+                box(status="warning",width=12, matplot(pt3,type="l",main="PC3 proj"))
+              ),
+              fluidRow(
+                box(status="warning",width=12, matplot(pt4,type="l",main="PC4 proj"))
+              )
+      ),
+      
+      tabItem(tabName = "handkpca",
+              h3("K-Means Clustering of Country base on Country Information", style = "color:yellow;"),
+              br(),
+              fluidRow(
+                box(status="warning",width = 15, plotlyOutput("kmean1"))
+              ),
+              h3("Hierarchical Clustering of Country base on Country Information", style = "color:yellow;"),
+              br(),
+              fluidRow(
+                mainPanel(
+                  img(src='hclust.png', align = "center")
+                )
+              ),
+              
+              fluidRow(
+                
+              )
+              
+              
+      ),
+            
       
       tabItem(tabName = "effects",
               h1("Exploring the Effects of Global Warming", style = "color:yellow;"),
@@ -456,6 +506,13 @@ server <- function(input, output) {
   output$sealevelsplot = renderPlotly(ggplot(data=sealevels,
                                              aes(x=Year, y=SeaLevel)) + labs(y="Sea Level (mm)") + geom_point() +
                                         geom_line(colour="blue") + geom_smooth(color="light green", se=F))
+  km = kmeans(infovalue2018,centers = 4, nstart = 25)
+  output$kmean1 = renderPlotly(ggplotly(fviz_cluster(km, data = infovalue2018,
+                                                     geom = "point",
+                                                     ellipse.type = "convex", 
+                                                     ggtheme = theme_bw(),
+                                                     main = "Brief Clustering of Country"
+  )))
   
 }
 

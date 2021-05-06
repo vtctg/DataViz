@@ -1,11 +1,11 @@
 library(shiny)
 library(shinydashboard)
+library(dashboardthemes)
 library(plotly)
 library(ggplot2)
 library(dplyr)
 library(readr)
-library(tidyverse)
-library(maps)
+library(ggthemes)
 
 
 oDs <- read_csv("ozone-depleting-substance-emissions .csv")
@@ -23,10 +23,22 @@ food = read_csv("food2.csv")
 ozone_gwp <- read_csv("ozone_gwp2.csv")
 Soc = read_csv("stratospheric-ozone-concentration.csv")
 aHa <- read_csv("antarctic-ozone-hole-area.csv")
+nopeA = read_csv("nopeA.csv")
+CountrYrOz = read_csv("CountrYrOz.csv")
+stratospheric_chorine_concentrations <- read_csv("stratospheric-chorine-concentrations.csv")
+stratospheric_ozone_concentration_projections <- read_csv("stratospheric-ozone-concentration-projections.csv")
+trendGID <- read_csv("trendGID.csv")
+heatplo=read_csv("correation2.csv")
 snowicefeb <- read.csv("snowicefeb.csv")
 seatemp <- read.csv("seatempfeb.csv")
 snowlevels <- read.csv("sealevels.csv")
 
+get_lower_tri<-function(cormat){
+  cormat[lower.tri(cormat)] <- NA
+  return(cormat)
+}
+upper_tri <- get_lower_tri(cor(heatplo,use="complete.obs"))
+melted_cormat <- reshape2::melt(upper_tri, na.rm = TRUE)
 
 ui <- dashboardPage(
   dashboardHeader(title = "Global Warming"),
@@ -34,136 +46,213 @@ ui <- dashboardPage(
   ## Sidebar content
   dashboardSidebar(
     sidebarMenu(
-      menuItem("Overview", tabName = "home", icon = icon("home")),
-      menuItem("Temperature Statistics", tabName = "stats", icon = icon("poll")),
+      menuItem("Home", tabName = "home", icon = icon("home")),
+      menuItem("Overview", tabName = "stats", icon = icon("poll")),
       menuItem("Causes of Global Warming", tabName = "causes", icon = icon("smoking"),
+               menuItem("Overview", tabName = "OvCau"),
                menuItem("Greenhouse gases", tabName = "ggas"),
                menuItem("Ozone layer depletion", tabName = "oLd")),
       menuItem("Effects of Global Warming", tabName = "effects", icon = icon("temperature-high")),
-      menuItem("How Can The World Help?", tabName = "measures", icon = icon("info-circle"))
+      menuItem("Helping Initiatives", tabName = "measures", icon = icon("info-circle"))
     )
   ),
   dashboardBody(
+    
+    tags$head(tags$style(HTML('
+      .main-header .logo {
+        font-family: "Georgia", Times, "Times New Roman", serif;
+        font-weight: bold;
+      }
+      .content-wrapper, .right-side {
+        background-color: #7da2d1;
+      }      
+    '))),
+    
     tabItems(
       tabItem(tabName = "home",
-              h2("Welcome To Our Global warming Data Visualization and Analysis"),
+              fluidRow(box(background = "purple",width=12,h1(strong(" Welcome To Our Global Warming Data Visualization and Analysis", style = "font-family:'times'")),
+                           br(),
+                           h4(" The below are some descriptions about each section of this app. You can view various data and analysis by clicking the tabs on the left side."))),
               br(),
-              
-              p("You can view various data and analysis by clicking different tabs on the left side. You can also continue reading for some basic information and background of global warming.")
+              fluidRow(infoBox(color="green", fill = T, width=7, h3(strong(" Overview", style="font-family:'Verdana'")), " General statistics, correlation graphs and geographical data", icon = icon("poll"))),
+              fluidRow(infoBox(color="navy", fill=T, width=7, h3(strong(" Causes of Global Warming", style="font-family:'Verdana'")), " Visualization and analysis of the problems brought by global warming", icon = icon("smoking"))
+              ),
+              fluidRow(infoBox(color="yellow", fill = T, width=7, h3(strong(" Effects of Global Warming", style="font-family:'Verdana'")), " General statistics, correlation graphs and geographical data", icon = icon("poll"))),
+              fluidRow(infoBox(color="fuchsia", fill=T, width=7, h3(strong(" Helping Initiatives", style="font-family:'Verdana'")), " Explores the effect of global agreements on global warming", icon = icon("smoking"))
+              )
       ),
       
-      tabItem(tabName = "stats",),
+      tabItem(tabName = "stats",
+              fluidRow(box(width = 7,status="warning",ggplotly(ggplot(data = melted_cormat, aes(Var2, Var1, fill = value))+
+                                                                 geom_tile(color = "white")+
+                                                                 scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
+                                                                                      midpoint = 0, limit = c(-1,1), space = "Lab", 
+                                                                                      name="Pearson Correlation") + theme_minimal() + ggtitle("Heatmap between variables")))
+              ),
+              
+              fluidRow(box(width=5, title=strong("Input",style="font-family:'Verdana'"),status="info",solidHeader = TRUE,
+                           h4("The right graphs show the relationship between two of the below selected variables."),
+                           br(),
+                           radioButtons("VaRr1", label = "Select x-axis:",
+                                        choices = list("Year" = "Year", 
+                                                       "Temperature (degree Celsius)" = "Temperature", 
+                                                       "World Population" = "WorldPopulation",
+                                                       "Mass of Carbon dioxide equivalent by global warming potential (GWP)" = "CO2e",
+                                                       "Ozone depletion" = "OzoneDepletion",
+                                                       "Energy (TWh)" = "Energy"),
+                                        selected = "Year"),
+                           radioButtons("VaRr2", label = "Select y-axis:",
+                                        choices = list("Year" = "Year", 
+                                                       "Temperature (degree Celsius)" = "Temperature", 
+                                                       "World Population" = "WorldPopulation",
+                                                       "Mass of Carbon dioxide equivalent by global warming potential (GWP)" = "CO2e",
+                                                       "Ozone depletion" = "OzoneDepletion",
+                                                       "Energy (TWh)" = "Energy"),
+                                        selected = "Temperature")),
+                       
+                       box(width=7, status="warning",plotlyOutput("coR"))
+              )
+              
+              
+              
+      ),
       
-      tabItem(tabName = "causes",),
+      tabItem(tabName = "OvCau",
+              fluidRow(box(background="light-blue", title = strong("Greenhouse Effect",style="font-family:'Verdana'"),HTML('<center><img src="greenhouse-effect_med.jpeg" width="715" height="500"></center>'),
+                           br(),
+                           h5("Image Source: https://ib.bioninja.com.au/standard-level/topic-4-ecology/44-climate-change/greenhouse-effect.html")),
+                       box(background="orange", title = strong("Earth's Heat Budget",style="font-family:'Verdana'"),HTML('<center><img src="r4r24323ew.jpg" width="650" height="500">></center>'),
+                           br(),
+                           h5("Image Source: https://www.nasa.gov/feature/langley/what-is-earth-s-energy-budget-five-questions-with-a-guy-who-knows")),
+              ),
+              fluidRow(box(background="maroon", title = strong("Ice-albedo Feedback",style="font-family:'Verdana'"),HTML('<center><img src="intro_art.gif" width="715" height="300"></center>'),
+                           br(),
+                           h5("Image Source: http://www.us-satellite.net/sprintt/phase2/ipy07_int_albedo/ipy07_int_albedo.html")),
+                       box(background="lime", title = strong("Ozone Depletion",style="font-family:'Verdana'"),HTML('<center><img src="Ozone-Layer-Depletion.png" width="650" height="500">></center>'),
+                           br(),
+                           h5("Image Source: https://byjus.com/biology/ozone-layer-depletion/"))
+              )
+      ),
       
       tabItem(tabName = "oLd",
               
               fluidRow(
-                box(status="warning",ggplotly(ggplot(data=oDs,aes(x=Year,y=`Ozone-depleting substance emissions`, color=Source)) + geom_line() + theme_grey())),
-                box(status="info",
+                box(status="warning",ggplotly(ggplot(data=oDs,aes(x=Year,y=`Ozone-depleting substance emissions`, color=Source)) + geom_line() + theme_light() + labs(title="Ozone-depleting substances emissions", y = "tonnes CFC11-equivalents")),
+                    h6("Source: Hegglin, M. I., Fahey, D. W., McFarland, M., Montzka, S. A., & Nash, E. R. 2018. Twenty questions and answers about the ozone layer. World Meteorological Organization, UNEP, NOAA, NASA, and European Commission.")),
+                box(status="info", title=strong("Input",style="font-family:'Verdana'"), solidHeader = T,
                     h4("This is a control widget for the below graph of various statistics of gases."),
                     br(),
                     radioButtons("OZi", label = "Select measurement method:",
                                  choices = list("Ozone-depleting potential (ODP):" = "ODP",
                                                 "Global warming potential relative to CO2 within a period of 100 years (GWP100):" = "GWP100",
                                                 "Atmospheric lifetime:" = "AtmosphericLifetime"),
-                                 selected = "Ozone-depleting potential (ODP):"),
+                                 selected = "ODP"),
                     h5("* ODP is measured by the relative potential of ozone depletion to CFC-11"),
                     h5("* Atmospheric lifetime is measured in years")
-                    )
+                )
                 
               ),
               br(),
               fluidRow(
-                column(width=12, plotlyOutput("OZ1"), h6("Source: Hegglin, M. I., Fahey, D. W., McFarland, M., Montzka, S. A., & Nash, E. R. (2014). Twenty questions and answers about the ozone layer: 2014 update. World Meteorological Organization, UNEP, NOAA, NASA, and European Commission."))
+                box(status="warning",width=12, plotlyOutput("OZ1"))
               ),
               
-              fluidRow(box(ggplotly(ggplot(data=Soc,aes(x=Year,y=`Mean daily concentration (NASA)`)) + geom_line() + labs(x="Year", y="Dobson Unit (DU)", title="Annual mean Stratospheric ozone concentration")),h6("Source: NASA. NASA Ozone Hole Watch. 2020. https://ozonewatch.gsfc.nasa.gov/meteorology/annual_data.html")),
-                       box(ggplotly(ggplot(data=aHa,aes(x=Year,y=`Mean ozone hole area`)) + geom_line() + labs(x="Year", y="squared km", title="Annual mean Antarctic ozone hole area")),h6("Source: NASA. NASA Ozone Hole Watch. 2020. https://ozonewatch.gsfc.nasa.gov/meteorology/annual_data.html"))
-                       )
+              fluidRow(box(status="warning",ggplotly(ggplot(data=Soc,aes(x=Year,y=`Mean daily concentration (NASA)`)) + geom_line() + geom_smooth(color = "#FF000088")+labs(x="Year", y="Dobson Unit (DU)", title="Annual mean Stratospheric ozone concentration")+ theme_light() ),h6("Source: NASA. NASA Ozone Hole Watch. 2020. https://ozonewatch.gsfc.nasa.gov/meteorology/annual_data.html")),
+                       box(status="warning",ggplotly(ggplot(data=aHa,aes(x=Year,y=`Mean ozone hole area`)) + geom_line() + geom_smooth(color = "#FF000088") + labs(x="Year", y="squared km", title="Annual mean Antarctic ozone hole area")+ theme_light() ),h6("Source: NASA. NASA Ozone Hole Watch. 2020. https://ozonewatch.gsfc.nasa.gov/meteorology/annual_data.html"))
+              ),
+              
+              fluidRow(box(status="danger",img(src = "jgrd15685-fig-0004.png"),
+                           img(src = "jgrd15685-fig-0005.png")),
+                       box(status = "primary", title=strong("Info",style="font-family:'Verdana'"), solidHeader = T,
+                           h4("The left graphs show the percentage change of irradiance from 1979 to 2008 by latitude. The statistics can be compared to the above two graphs of stratospheric ozone concentration and Antarctic ozone hole area."),
+                           br(),
+                           h5("Source: Herman, J. R. 2010. Global increase in UV irradiance during the past 30 years (1979-2008) estimated from satellite data, J. Geophys. Res., 115, D04203, doi:10.1029/2009JD012219."))
+                       
+              )
       ),
       
       tabItem(tabName = "ggas",
-              h3("What are greenhouse gases?"),
-              p("In a greenhouse, sunlight enters the greenhouse through transparent glass and is trapped inside of it. This is also the same for the greenhouse effect. Radiation from the sun."),
-              box(title="Input",status="info",solidHeader = TRUE,
+              box(title=strong("Input",style="font-family:'Verdana'"),status="info",solidHeader = TRUE,
+                  h4("The right graphs show the annual growth mean and growth rate of the concentration of various greenhouse gases."),
+                  h4("Note that the scale of measurement is different for each gas."),
+                  br(),
                   radioButtons("GasTrendGroup", label = "Select gas:",
-                                          choices = list("CO2 (Carbon Dioxide)" = "co2", 
-                                                         "CH4 (Methane)" = "ch4", 
-                                                         "N2O (Nitrous Oxide)" = "n2o",
-                                                         "SF6 (Sulfur Hexafluoride)" = "sf6"),
-                                          selected = "co2"),
+                               choices = list("CO2 (Carbon Dioxide)" = "co2", 
+                                              "CH4 (Methane)" = "ch4", 
+                                              "N2O (Nitrous Oxide)" = "n2o",
+                                              "SF6 (Sulfur Hexafluoride)" = "sf6"),
+                               selected = "co2"),
                   br(),
                   h5("*The unit of CO2 measurement is part per million (ppm)."),
                   h5("*The unit of CH4 and N2O measurement are part per billion (ppb)."),
                   h5("*The unit of SF6 measurement is part per trillion (ppt)."),
                   h5("* 1000 ppt = 1 ppb = 0.001 ppm")
-                  ),
+              ),
               
               tabBox(selected="Annual Mean",
                      tabPanel("Annual Mean",plotlyOutput("ggas1")),
                      tabPanel("Annual Growth Rate",plotlyOutput("ggas2")),
                      h6("Source: Global Monitoring Laboratory. 2021. Global Monitoring Laboratory - Carbon Cycle Greenhouse Gases. https://www.esrl.noaa.gov/gmd/ccgg/trends/")
-                     ),
-              
-              fluidRow(box(plot_ly(data=ggas3, x=~Gas, y=~GWP100, type="bar") %>% layout(title = "Heat Absorbance of gases within a period of 100 years, relative to CO2"),
-                  h6("Source: IPCC, 2014: Climate Change 2014: Synthesis Report. Contribution of Working Groups I, II and III to the Fifth Assessment Report of the Intergovernmental Panel on Climate Change. https://www.ipcc.ch/pdf/assessment-report/ar5/syr/SYR_AR5_FINAL_full.pdf")
-                  ),
-                  
-                  box(status = "primary",title = "Info", solidHeader = T, h4("The left graph shows the warming effects of some gases relative to CO2 in a 100-year period. As those effects differ from one another a lot, summing up the mass of all greenhouse gases emitted may not be a suitable way to account for global warming."),
-                      br(),
-                      h4("Instead, the following sections convert the mass of each greenhouse gases to the equivalent mass of CO2 by GWP."))
               ),
-
-              fluidRow(box(title="Input",status="info",solidHeader = TRUE,
+              
+              fluidRow(box(status="warning",plot_ly(data=ggas3, x=~Gas, y=~GWP100, type="bar") %>% layout(title = "Heat Absorbance of gases within a period of 100 years, relative to CO2"),
+                           h6("Source: IPCC, 2014: Climate Change 2014: Synthesis Report. Contribution of Working Groups I, II and III to the Fifth Assessment Report of the Intergovernmental Panel on Climate Change. https://www.ipcc.ch/pdf/assessment-report/ar5/syr/SYR_AR5_FINAL_full.pdf")
+              ),
+              
+              box(status = "primary",title = strong("Info",style="font-family:'Verdana'"), solidHeader = T, h4("The left graph shows the warming effects of some gases relative to CO2 in a 100-year period. As those effects differ from one another a lot, summing up the mass of all greenhouse gases emitted may not be a suitable way to account for global warming."),
+                  br(),
+                  h4("Instead, the following sections convert the mass of each greenhouse gases to the equivalent mass of CO2 by GWP."))
+              ),
+              
+              fluidRow(box(width=5,title=strong("Input",style="font-family:'Verdana'"),status="info",solidHeader = TRUE,
                            h4("The right graph shows the greenhouse gases emission breakdown by industrial sectors."),
                            br(),
                            sliderInput("GasTrendYear", label = "Select year:",
-                           min=1990, max=2016, value=2016),
+                                       min=1990, max=2016, value=2016),
                            br(),
                            h5("* The unit of measurement is Gigatonnes CO2 equivalent (Gt CO2e)"),
-                      ),
+              ),
               
-              tabBox(selected = "Total",
+              tabBox(width=7, selected = "Total",
                      tabPanel("Total", plotlyOutput("gaspro1")),
                      tabPanel("CO2", plotlyOutput("gaspro2")),
                      tabPanel("CH4", plotlyOutput("gaspro3")),
                      tabPanel("N2O", plotlyOutput("gaspro4")),
                      h6("Source: 	Climate Watch. 2016. CAIT Climate Data Explorer. https://www.climatewatchdata.org/data-explorer/historical-emissions?historical-emissions-data-sources=cait&historical-emissions-gases=all-ghg&historical-emissions-regions=All%20Selected&historical-emissions-sectors=total-including-lucf"))
               ),
-              
-              fluidRow(box(ggplotly(ggplot(data=gpe,aes(x=year,y=value,fill=variable, color = variable)) + geom_area(aes(alpha=.1)) + labs(title = "Energy consumption breakdown by sources", x="TW h"))),
-                       box(status = "primary",title = "Info", solidHeader = T, h4("The left graph shows the distribution of energy consumption by their sources."),
+              fluidRow(box(status="warning", width=7,ggplotly(ggplot(data=gpe,aes(x=year,y=value,fill=variable, color = variable)) + geom_area(alpha=.5) + labs(title = "Energy consumption breakdown by sources", y="TW h")+ theme_light() ),
+                           h6("Source: Vaclav Smil. 2017. Energy Transitions: Global and National Perspectives. & BP Statistical Review of World Energy.")),
+                       box(width=5, status = "primary",title = strong("Info",style="font-family:'Verdana'"), solidHeader = T, h4("The left graph shows the distribution of energy consumption by their sources."),
                            br(),
                            h4("The unit of measurement is Terawatt-hour."))
               ),
               
               
-              fluidRow(box(title="Input",status="info",solidHeader = TRUE,
+              fluidRow(box(width=5,title=strong("Input",style="font-family:'Verdana'"),status="info",solidHeader = TRUE,
                            h4("The right graph shows the greenhouse gases emission breakdown by sectors in the food system in 2015. The left subgraph is by food stage, and the right subgraph is by food compartment."),
                            h4("Note that the result does not contradicts the above, as some part of the food system overlaps with other industrial sectors."),
                            br(),
                            radioButtons("FoodCountr", label = "Select region:",
                                         choices = list("Globe" = "Globe", 
-                                                    "Industrialized Countries" = "Industrialized", 
-                                                    "Developing Countries" = "Developing"),
+                                                       "Industrialized Countries" = "Industrialized", 
+                                                       "Developing Countries" = "Developing"),
                                         selected = "Globe"),
-                           br(),
                            h4(textOutput("foodGh2")),
+                           br(),
                            h5("* The unit of measurement is Gigatonnes CO2 equivalent (Gt CO2e)"),
                            h5("* LULUC stands for agriculture and associated land use and land-use change activities")
-                       ),
-                       
-                       box(plotlyOutput("foodGh"),
-                           h6("Source: Crippa, M., Solazzo, E., Guizzardi, D. et al. Food systems are responsible for a third of global anthropogenic GHG emissions. Nat Food 2, 198-209 (2021). https://doi.org/10.1038/s43016-021-00225-9")
-                       )
               ),
               
-              
+              box(width=7,status="warning",plotlyOutput("foodGh"),
+                  h6("Source: Crippa, M., Solazzo, E., Guizzardi, D. et al. Food systems are responsible for a third of global anthropogenic GHG emissions. Nat Food 2, 198-209 (2021). https://doi.org/10.1038/s43016-021-00225-9")
+              )
+              )
               
               
       ),
-
+      
+      
+      
       tabItem(tabName = "effects",
               h2("Exploring the Effects of Global Warming"),
               h3("Are global ice levels declining?"),
@@ -190,22 +279,22 @@ ui <- dashboardPage(
               h3("Are sea temperatures rising?"),
               p("The seas are warming up too. We can observe changes in the sea surface temperatures."),
               fluidRow(
-              box(selected="Annual Anomalies",
-                     tabPanel("Annual Anomalies",plotlyOutput("seatempplot")),
-                     h6("Source: United States Environmental Protection Agency. 2021. Climate Change Indicators: Sea Level - EPA. 
+                box(selected="Annual Anomalies",
+                    tabPanel("Annual Anomalies",plotlyOutput("seatempplot")),
+                    h6("Source: United States Environmental Protection Agency. 2021. Climate Change Indicators: Sea Level - EPA. 
                         https://www.epa.gov/climate-indicators/climate-change-indicators-sea-level")
-              ),
-              box(title="Input",status="info",solidHeader = TRUE,
-                  radioButtons("TempRegion", label = "Select region:",
-                               choices = list("Global" = "G",
-                                              "Northern Hemisphere" = "N", 
-                                              "Southern Hemisphere" = "S"),
-                               selected = "G"),
-                  br(),
-                  h5("*Sea temperature anomalies are measured in degree Celsius"),
-                  h5("*Anomalies are relative to the 20th century (1901-2000) base period average."),
-                  h5("Temperature anomalies based annually from February reports.")
-              )),
+                ),
+                box(title="Input",status="info",solidHeader = TRUE,
+                    radioButtons("TempRegion", label = "Select region:",
+                                 choices = list("Global" = "G",
+                                                "Northern Hemisphere" = "N", 
+                                                "Southern Hemisphere" = "S"),
+                                 selected = "G"),
+                    br(),
+                    h5("*Sea temperature anomalies are measured in degree Celsius"),
+                    h5("*Anomalies are relative to the 20th century (1901-2000) base period average."),
+                    h5("Temperature anomalies based annually from February reports.")
+                )),
               h3("Ice Melting, Temperatures Warming, Sea Levels Rising"),
               fluidRow(
                 box(status = "primary",title = "Info", solidHeader = T, 
@@ -215,45 +304,102 @@ ui <- dashboardPage(
                     h4("This is a rising issue as it would devestate coastal habitats with flooding and erosion, destroying homes of people, animals, and plants alike."),
                     br(),
                     h5("*Sea level is measured in milimeters of the tide via tide gauge stations")),
-              box(plotlyOutput("sealevelsplot"),
-              h6("Source: Permanent Service for Mean Sea Level.2021. Obtaining Tide Gauge Data - PSMSL.https://www.psmsl.org/data/obtaining/"))
+                box(plotlyOutput("sealevelsplot"),
+                    h6("Source: Permanent Service for Mean Sea Level.2021. Obtaining Tide Gauge Data - PSMSL.https://www.psmsl.org/data/obtaining/"))
               ),
               
               
       ),
       
-      tabItem(tabName = "measures",)
+      tabItem(tabName = "measures",
               
+              
+              fluidRow(box(width=12,status="warning",
+                           ggplotly(ggplot(data=nopeA, aes(x=Year, y=`#Parties`, color = Name)) + geom_line() + ggtitle("Number of parties joining various international agreements")+ theme_light() ),
+                           h6("Source: UNCTAD Development and Globalization: Facts and Figures (2016). United Nations Conference on Trade and Development. http://stats.unctad.org/Dgff2016/index.html"))
+              ),
+              
+              fluidRow(box(width = 4,status="info", title = strong("Input",style="font-family:'Verdana'"), solidHeader = T,
+                           h4("The below graph shows the ozone-depleting substances by country and year."),
+                           br(),
+                           sliderInput("YeArrrrr", label = "Select year:",
+                                       min=1989, max=2013, value=2013),
+                           br(),
+                           h5("* Some countries not having availablle data is not shown on the map")
+              ),
+              
+              box(status="warning",width=8, plotlyOutput("Mgy"),
+                  h6("Source: United Nations Environment Programme. 2015. http://ede.grid.unep.ch/"))
+              
+              ),
+              
+              fluidRow(box(status="warning",
+                           ggplotly(ggplot(data=stratospheric_chorine_concentrations, aes_string(x="Year", y="EquivalentStratosphericChorineESC", color = "Entity")) + geom_line() + labs(y="Equivalent Stratospheric Chorine (ESC)", title = "Equivalent stratospheric chorine relative to 1960 level")+ theme_light() ),
+                           h6("Source: Hegglin, M. I., Fahey, D. W., McFarland, M., Montzka, S. A., & Nash, E. R. 2018. Twenty questions and answers about the ozone layer. World Meteorological Organization, UNEP, NOAA, NASA, and European Commission.")),
+                       box(status="warning",
+                           ggplotly(ggplot(data=stratospheric_ozone_concentration_projections, aes_string(x="Year", y="OzoneConcentration", color = "Entity")) + geom_line() + ggtitle ("Equivalent ozone concentration relative to 1960 level")+ theme_light() ),
+                           h6("Source: Hegglin, M. I., Fahey, D. W., McFarland, M., Montzka, S. A., & Nash, E. R. 2018. Twenty questions and answers about the ozone layer. World Meteorological Organization, UNEP, NOAA, NASA, and European Commission.")
+                       )),
+              
+              fluidRow(box(status="warning", plotlyOutput("MinusT1"),
+                           h6("Source: Crippa, M., Solazzo, E., Guizzardi, D. et al. 2021. Food systems are responsible for a third of global anthropogenic GHG emissions. Nat Food 2, 198-209. https://doi.org/10.1038/s43016-021-00225-9")),
+                       box(status="warning", plotlyOutput("MinusT2"),
+                           h6("Source: Crippa, M., Solazzo, E., Guizzardi, D. et al. 2021. Food systems are responsible for a third of global anthropogenic GHG emissions. Nat Food 2, 198-209. https://doi.org/10.1038/s43016-021-00225-9"))),
+              
+              fluidRow(
+                box(width = 4, status = "info", title = strong("Input",style="font-family:'Verdana'"), solidHeader = T,
+                    h4("This is the control widget for the above 2 graphs."),
+                    br(),
+                    radioButtons("luluC", label = "Select region:",
+                                 choices = list("Total" = 0, 
+                                                "Exclude LULUC" = 1),
+                                 selected =  0),
+                    br(),
+                    h5("* Gt CO2e = Gigatonnes of CO2 equivalent in terms of global warming potential (GWP)"),
+                    h5("* LULUC stands for agriculture and associated land use and land-use change activities")),
+                
+                box(width=8, status = "danger", title = strong("Example: Montreal Protocol",style="font-family:'Verdana'"), solidHeader = T,
+                    img(src="Q18-1.png"),
+                    h6("Source: Hegglin, M. I., Fahey, D. W., McFarland, M., Montzka, S. A., & Nash, E. R. 2018. Twenty questions and answers about the ozone layer:. World Meteorological Organization, UNEP, NOAA, NASA, and European Commission.")),
+                
+                
+                
+              ))
     )
   )
 )
 
 server <- function(input, output) {
-      output$ggas1 = renderPlotly(ggplotly(ggplot(data=ggas, aes_string(x="date", y=input$GasTrendGroup)) + geom_line() + labs(x="Year", title = "Annual mean of the gas concentration at the atmosphere") + theme_light() + geom_smooth(color = "#FF000088")))
-      output$ggas2 = renderPlotly(ggplotly(ggplot(data=ggas2, aes_string(x="year", y=input$GasTrendGroup)) + geom_line() + labs(x="Year",title = "Annual growth rate of the gas concentration at the atmosphere") + theme_light() + geom_smooth(color = "#FF000088")))
-      output$gaspro1 = renderPlotly(plot_ly(data=ghgpro, labels=~X1, values=as.vector(unlist(ghgpro[,input$GasTrendYear-1988])), type = "pie") %>% layout(title = "Breakdown of greenhouse gas emission by industrial sectors",showlegend = TRUE, legend = list(font = list(size = 10))))
-      output$gaspro2 = renderPlotly(plot_ly(data=co2pro, labels=~X1, values=as.vector(unlist(co2pro[,input$GasTrendYear-1988])), type = "pie") %>% layout(title = "Breakdown of greenhouse gas emission by industrial sectors",showlegend = TRUE, legend = list(font = list(size = 10))))
-      output$gaspro3 = renderPlotly(plot_ly(data=ch4pro, labels=~X1, values=as.vector(unlist(ch4pro[,input$GasTrendYear-1988])), type = "pie") %>% layout(title = "Breakdown of greenhouse gas emission by industrial sectors",showlegend = TRUE, legend = list(font = list(size = 10))))
-      output$gaspro4 = renderPlotly(plot_ly(data=n2opro, labels=~X1, values=as.vector(unlist(n2opro[,input$GasTrendYear-1988])), type = "pie") %>% layout(title = "Breakdown of greenhouse gas emission by industrial sectors",showlegend = TRUE, legend = list(font = list(size = 10))))
-      output$foodGh = renderPlotly(plot_ly(data=food[food$Area==input$FoodCountr,],labels=~`Food Stage`, values=~Emission, type = "pie", name = "Food Stage", domain = list(row=0,column=0),textinfo='label+percent') %>% add_pie(data=food[food$Area==input$FoodCountr,],labels=~`Food compartment`, values=~emission, name = "Food Compartment", domain = list(row=0,column=1),textinfo='label+percent') %>% layout(title = "Breakdown of greenhouse gas emission in food system", showlegend = F,grid=list(rows=1, columns=2), xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE)))
-      output$foodGh2 = renderText(paste("The total emission of greenhouse gases is", sum(food[food$Area==input$FoodCountr,]$Emission), "billion tonnes equivalent of CO2."))
-      output$OZ1 = renderPlotly(ggplotly(ggplot(ozone_gwp, aes_string(x="Gas", y=input$OZi, fill="Type")) + geom_bar(stat="identity") + scale_x_discrete(limits = ozone_gwp$Gas) + theme_grey()))
-      
-      output$snowicefeb1 = renderPlotly(ggplotly(ggplot(data=snowicefeb,
-                                                        aes_string(x="Year", y=paste(input$CoverageRegion,"Coverage",sep=""))) + geom_line() +
-                                                   labs(y="Ice Coverage (million km squared)", title="Annual Average Ice Coverage") +
-                                                   theme_light() + geom_smooth(color = "blue")))
-      output$snowicefeb2 = renderPlotly(ggplotly(ggplot(data=snowicefeb,
-                                                        aes_string(x="Year", y=paste(input$CoverageRegion,"Anomaly",sep=""), fill=paste(input$CoverageRegion,"pos",sep=""))) + geom_col(stat="identity") +
-                                                 labs(y="Anomalies (million km squared)", title="Anomalies from Average Ice Coverage") +
-                                                   theme_light()))
-      output$seatempplot = renderPlotly(ggplotly(ggplot(data=seatemp,
-                                                        aes_string(x="Year", y=paste(input$TempRegion,"Temp",sep=""))) + geom_col(stat="identity", fill="red") +
-                                                   labs(y="Sea Temperature (degree Celsius)", title="Sea Temperature Anomalies") +
-                                                   theme_light() + geom_smooth(color = "dark orange", se=F)))
-      output$sealevelsplot = renderPlotly(ggplot(data=sealevels,
+  output$ggas1 = renderPlotly(ggplotly(ggplot(data=ggas, aes_string(x="date", y=input$GasTrendGroup)) + geom_line() + labs(x="Year", title = "Annual mean of the gas concentration at the atmosphere") + theme_light() + geom_smooth(color = "#FF000088")))
+  output$ggas2 = renderPlotly(ggplotly(ggplot(data=ggas2, aes_string(x="year", y=input$GasTrendGroup)) + geom_line() + labs(x="Year",title = "Annual growth rate of the gas concentration at the atmosphere") + theme_light() + geom_smooth(color = "#FF000088")))
+  output$gaspro1 = renderPlotly(plot_ly(data=ghgpro, labels=~X1, values=as.vector(unlist(ghgpro[,input$GasTrendYear-1988])), type = "pie") %>% layout(title = "Breakdown of greenhouse gas emission by industrial sectors",showlegend = TRUE, legend = list(font = list(size = 10))))
+  output$gaspro2 = renderPlotly(plot_ly(data=co2pro, labels=~X1, values=as.vector(unlist(co2pro[,input$GasTrendYear-1988])), type = "pie") %>% layout(title = "Breakdown of greenhouse gas emission by industrial sectors",showlegend = TRUE, legend = list(font = list(size = 10))))
+  output$gaspro3 = renderPlotly(plot_ly(data=ch4pro, labels=~X1, values=as.vector(unlist(ch4pro[,input$GasTrendYear-1988])), type = "pie") %>% layout(title = "Breakdown of greenhouse gas emission by industrial sectors",showlegend = TRUE, legend = list(font = list(size = 10))))
+  output$gaspro4 = renderPlotly(plot_ly(data=n2opro, labels=~X1, values=as.vector(unlist(n2opro[,input$GasTrendYear-1988])), type = "pie") %>% layout(title = "Breakdown of greenhouse gas emission by industrial sectors",showlegend = TRUE, legend = list(font = list(size = 10))))
+  output$foodGh = renderPlotly(plot_ly(data=food[food$Area==input$FoodCountr,],labels=~`Food Stage`, values=~Emission, type = "pie", name = "Food Stage", domain = list(row=0,column=0),textinfo='label+percent') %>% add_pie(data=food[food$Area==input$FoodCountr,],labels=~`Food compartment`, values=~emission, name = "Food Compartment", domain = list(row=0,column=1),textinfo='label+percent') %>% layout(title = "Breakdown of greenhouse gas emission in food system", showlegend = F,grid=list(rows=1, columns=2), xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE)))
+  output$foodGh2 = renderText(paste("The total emission of greenhouse gases is", sum(food[food$Area==input$FoodCountr,]$Emission), "billion tonnes equivalent of CO2."))
+  output$OZ1 = renderPlotly(ggplotly(ggplot(ozone_gwp, aes_string(x="Gas", y=input$OZi, fill="Type")) + geom_bar(stat="identity") + scale_x_discrete(limits = ozone_gwp$Gas) + theme_grey() + labs(title = "Environmental statistics of gases")))
+  output$Mgy = renderPlotly(ggplotly(ggplot() + geom_polygon(data=filter(CountrYrOz, Year == input$YeArrrrr), mapping = aes(long,lat,group=group, fill=Consumption, color=Country), size=0) +theme_void() +scale_fill_gradient(  low = "#99FFFF", na.value="#FFFFFF",high = "#FF0000")+theme(panel.background = element_rect(fill = '#FFFFFF', colour = 'blue'))))
+  output$MinusT1 = renderPlotly(ggplotly(ggplot(trendGID, aes_string(x="year", y=colnames(trendGID)[3+as.numeric(input$luluC)], color="CountryGroup", fill="CountryGroup")) + geom_line() + theme_light() + labs(title="Greenhouse gases emission from food system", y = "Gt CO2e")))
+  output$MinusT2 = renderPlotly(ggplotly(ggplot(trendGID, aes_string(x="year", y=colnames(trendGID)[6-as.numeric(input$luluC)], color="CountryGroup", fill="CountryGroup")) + geom_line() + theme_light() + labs(title="Greenhouse gases emission proportion of food system", y = "%")))
+  output$coR = renderPlotly(ggplotly(ggplot(data = heatplo, aes_string(x=input$VaRr1,y=input$VaRr2)) + geom_point() + theme_light()))
+  
+  output$snowicefeb1 = renderPlotly(ggplotly(ggplot(data=snowicefeb,
+                                                    aes_string(x="Year", y=paste(input$CoverageRegion,"Coverage",sep=""))) + geom_line() +
+                                               labs(y="Ice Coverage (million km squared)", title="Annual Average Ice Coverage") +
+                                               theme_light() + geom_smooth(color = "blue")))
+  output$snowicefeb2 = renderPlotly(ggplotly(ggplot(data=snowicefeb,
+                                                    aes_string(x="Year", y=paste(input$CoverageRegion,"Anomaly",sep=""), fill=paste(input$CoverageRegion,"pos",sep=""))) + geom_col(stat="identity") +
+                                               labs(y="Anomalies (million km squared)", title="Anomalies from Average Ice Coverage") +
+                                               theme_light()))
+  output$seatempplot = renderPlotly(ggplotly(ggplot(data=seatemp,
+                                                    aes_string(x="Year", y=paste(input$TempRegion,"Temp",sep=""))) + geom_col(stat="identity", fill="red") +
+                                               labs(y="Sea Temperature (degree Celsius)", title="Sea Temperature Anomalies") +
+                                               theme_light() + geom_smooth(color = "dark orange", se=F)))
+  output$sealevelsplot = renderPlotly(ggplot(data=sealevels,
                                              aes(x=Year, y=SeaLevel)) + labs(y="Sea Level (mm)") + geom_point() +
-                                             geom_line(colour="blue") + geom_smooth(color="light green", se=F))
+                                        geom_line(colour="blue") + geom_smooth(color="light green", se=F))
+  
 }
 
 shinyApp(ui, server)

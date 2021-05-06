@@ -322,7 +322,9 @@ ui <- dashboardPage(
                     h6("Source: Permanent Service for Mean Sea Level.2021. Obtaining Tide Gauge Data - PSMSL.https://www.psmsl.org/data/obtaining/"))
               ),
               fluidRow(
-                box(img(src="statue_drown.jpg"), align="center"),
+                box(img(src="storm_surge.jpg"), align="center", 
+                    h6("Source: Hong Kong Observatory(HKO).2021. Climate Projections for Hong Kong - Mean sea level - HKO.
+                       https://www.hko.gov.hk/en/climate_change/proj_hk_msl.htm")),
                 box(status="primary", title="What's to Come?", solidHeader=T,
                     h4("SROCC (The Special Report on the Ocean and Ctyosphere in a Changing Climate from September 2019 by IPCC (Intergovernmental Panel on Climate Change)
                        project that the annual mean sea level in Hong Kong and adjacent waters (including vertical displacement from tectonic movement)

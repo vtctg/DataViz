@@ -1,3 +1,4 @@
+setwd("D:/Github/DataViz")
 library(shiny)
 library(shinydashboard)
 library(dashboardthemes)
@@ -6,6 +7,10 @@ library(ggplot2)
 library(dplyr)
 library(readr)
 library(ggthemes)
+library(tidyverse)
+library(gridExtra)
+library(stats)
+library(ggpubr)
 
 
 oDs <- read_csv("ozone-depleting-substance-emissions .csv")
@@ -32,6 +37,11 @@ heatplo=read_csv("correation2.csv")
 snowicefeb <- read.csv("snowicefeb.csv")
 seatemp <- read.csv("seatempfeb.csv")
 snowlevels <- read.csv("sealevels.csv")
+combinetemp = read.csv("combinetemp.csv")
+
+
+
+
 
 get_lower_tri<-function(cormat){
   cormat[lower.tri(cormat)] <- NA
@@ -112,7 +122,16 @@ ui <- dashboardPage(
                                         selected = "Temperature")),
                        
                        box(width=7, status="warning",plotlyOutput("coR"))
+              ),
+              
+              
+              fluidRow(box(width = 15,status="warning",plot_ly(combinetemp, z= ~avgtemp, text = ~hover, locations = ~Country ,type = 'choropleth',
+                                                              locationmode = "country names", color = ~avgtemp, colorscale = "hot",frame = ~Year,
+                                                              marker = list(line = list(color = toRGB("white"), width = 2))) %>%
+                                                      colorbar(limits = c(-100,90)) %>% layout(
+                                                        title = 'Scaled Global Temperature by Year'))
               )
+      
               
               
               

@@ -73,7 +73,7 @@ ui <- dashboardPage(
               fluidRow(box(background = "purple",width=12,h1(strong(" Welcome To Our Global Warming Data Visualization and Analysis", style = "font-family:'times'")),
                            br(),
                            h4(" The below are some descriptions about each section of this app. You can view various data and analysis by clicking the tabs on the left side."),
-                           h4("View this app with 1920x1080 resolution on your browser with horizontal tabs for the best experience."))),
+                           h4("View this app with a high resolution for the best experience."))),
               br(),
               fluidRow(infoBox(color="green", fill = T, width=7, h3(strong(" Overview", style="font-family:'Verdana'")), " General statistics, correlation graphs and geographical data", icon = icon("poll"))),
               fluidRow(infoBox(color="navy", fill=T, width=7, h3(strong(" Causes of Global Warming", style="font-family:'Verdana'")), " Visualization and analysis of the sources of global warming", icon = icon("smoking"))
@@ -121,17 +121,17 @@ ui <- dashboardPage(
       tabItem(tabName = "OvCau",
               h1("Some Scientific Concepts...", style = "color:yellow;"),
               br(),
-              fluidRow(box(background="light-blue", title = strong("Greenhouse Effect",style="font-family:'Verdana'"),HTML('<center><img src="greenhouse-effect_med.jpeg" width="715" height="500"></center>'),
+              fluidRow(box(background="light-blue", title = strong("Greenhouse Effect",style="font-family:'Verdana'"),HTML('<center><img src="greenhouse-effect_med.jpeg" width="100%" height="100%"></center>'),
                            br(),
                            h5("Image Source: https://ib.bioninja.com.au/standard-level/topic-4-ecology/44-climate-change/greenhouse-effect.html")),
-                       box(background="orange", title = strong("Earth's Heat Budget",style="font-family:'Verdana'"),HTML('<center><img src="r4r24323ew.jpg" width="650" height="500">></center>'),
+                       box(background="orange", title = strong("Earth's Heat Budget",style="font-family:'Verdana'"),HTML('<center><img src="r4r24323ew.jpg" width="100%" height="100%">></center>'),
                            br(),
                            h5("Image Source: https://www.nasa.gov/feature/langley/what-is-earth-s-energy-budget-five-questions-with-a-guy-who-knows")),
               ),
-              fluidRow(box(background="maroon", title = strong("Ice-albedo Feedback",style="font-family:'Verdana'"),HTML('<center><img src="intro_art.gif" width="715" height="300"></center>'),
+              fluidRow(box(background="maroon", title = strong("Ice-albedo Feedback",style="font-family:'Verdana'"),HTML('<center><img src="intro_art.gif" width="100%" height="100%"></center>'),
                            br(),
                            h5("Image Source: http://www.us-satellite.net/sprintt/phase2/ipy07_int_albedo/ipy07_int_albedo.html")),
-                       box(background="lime", title = strong("Ozone Depletion",style="font-family:'Verdana'"),HTML('<center><img src="Ozone-Layer-Depletion.png" width="650" height="500">></center>'),
+                       box(background="lime", title = strong("Ozone Depletion",style="font-family:'Verdana'"),HTML('<center><img src="Ozone-Layer-Depletion.png" width="100%" height="100%">></center>'),
                            br(),
                            h5("Image Source: https://byjus.com/biology/ozone-layer-depletion/"))
               )
@@ -166,8 +166,8 @@ ui <- dashboardPage(
                        box(status="warning",ggplotly(ggplot(data=aHa,aes(x=Year,y=`Mean ozone hole area`)) + geom_line() + geom_smooth(color = "#FF000088") + labs(x="Year", y="squared km", title="Annual mean Antarctic ozone hole area")+ theme_light() ),h6("Source: NASA. NASA Ozone Hole Watch. 2020. https://ozonewatch.gsfc.nasa.gov/meteorology/annual_data.html"))
               ),
               
-              fluidRow(box(status="danger",img(src = "jgrd15685-fig-0004.png"),
-                           img(src = "jgrd15685-fig-0005.png")),
+              fluidRow(box(status="danger",img(src = "jgrd15685-fig-0004.png",width="100%", height="100%"),
+                           img(src = "jgrd15685-fig-0005.png",width="100%", height="100%")),
                        box(status = "primary", title=strong("Irradiance, Latitude, Ozone concentration",style="font-family:'Verdana'"), solidHeader = T,
                            h4("The left graphs show the percentage change of irradiance from 1979 to 2008 by latitude. The statistics can be compared to the above two graphs of stratospheric ozone concentration and Antarctic ozone hole area."),
                            br(),
@@ -287,13 +287,13 @@ ui <- dashboardPage(
               
               fluidRow(
                 tabBox(selected="Arctic Ice Loss Timelapse",
-                       tabPanel("Arctic Ice Loss Timelapse", img(src="Arctic_ice_loss.gif", width=350, height=250), align="center"),
-                       tabPanel("Arctic Ice Loss Result", img(src="Arctic_ice_loss_result.jpg", width=400, height=250), align="center"),
+                       tabPanel("Arctic Ice Loss Timelapse", img(src="Arctic_ice_loss.gif", width="100%", height="100%"), align="center"),
+                       tabPanel("Arctic Ice Loss Result", img(src="Arctic_ice_loss_result.jpg", width="100%", height="100%"), align="center"),
                        h6("Source: NASA. 2021. Climate Change: Vital Signs of the Planet - NASA/Trent Schindler & NASA/Goddard.
                           http://climate.nasa.gov/")
                 ),
                 box(status="danger",
-                  img(src="polarbear.jpg", width=500, height=300), align="center",
+                  img(src="polarbear.jpg", width="100%", height="100%"), align="center",
                   h6("Source: Salt Lake City Weekly. 2021. What Global Warming? - Paul Rosenburg.
                      https://www.cityweekly.net/utah/what-global-warming/Content?oid=7516264")
                 )
@@ -331,7 +331,7 @@ ui <- dashboardPage(
                     h6("Source: Permanent Service for Mean Sea Level.2021. Obtaining Tide Gauge Data - PSMSL.https://www.psmsl.org/data/obtaining/"))
               ),
               fluidRow(
-                box(status="danger",img(src="storm_surge.jpg"), align="center", 
+                box(status="danger",img(src="storm_surge.jpg",width="100%", height="100%"), align="center", 
                     h6("Source: Hong Kong Observatory(HKO).2021. Climate Projections for Hong Kong - Mean sea level - HKO.
                        https://www.hko.gov.hk/en/climate_change/proj_hk_msl.htm")),
                 box(status="primary", title=strong("What's to Come?",style="font-family:'Verdana'"), solidHeader=T,
@@ -393,7 +393,7 @@ ui <- dashboardPage(
                     h5("* LULUC stands for agriculture and associated land use and land-use change activities")),
                 
                 box(width=8, status = "danger", title = strong("Example: Montreal Protocol",style="font-family:'Verdana'"), solidHeader = T,
-                    img(src="Q18-1.png"),
+                    img(src="Q18-1.png",width="100%" ,height="100%"),
                     h6("Source: Hegglin, M. I., Fahey, D. W., McFarland, M., Montzka, S. A., & Nash, E. R. 2018. Twenty questions and answers about the ozone layer:. World Meteorological Organization, UNEP, NOAA, NASA, and European Commission.")),
                 
                 

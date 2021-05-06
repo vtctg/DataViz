@@ -43,6 +43,7 @@ pt2=read.csv("pt2.csv")
 pt3=read.csv("pt3.csv")
 pt4=read.csv("pt4.csv")
 infovalue2018 = read.csv("infovalue2018.csv")
+ind.coord = read.csv("ind_coord.csv")
 
 
 
@@ -324,9 +325,9 @@ ui <- dashboardPage(
                   img(src='hclust.png', align = "center")
                 )
               ),
-              
+              h3("K-means Clustering after PCA Dimension Reduction", style = "color:yellow;"),
               fluidRow(
-                
+                box(status="warning",width = 15, plotlyOutput("pcakmean"))
               )
               
               
@@ -513,6 +514,19 @@ server <- function(input, output) {
                                                      ggtheme = theme_bw(),
                                                      main = "Brief Clustering of Country"
   )))
+  
+  pca_2018 = prcomp(infovalue2018, scale = TRUE)
+  pca_2018$rotation = -pca_2018$rotation
+  pca_2018$x = -pca_2018$x
+  eigenvalue <- round(get_eigenvalue(pca_2018), 1)
+  variance.percent <- eigenvalue$variance.percent
+  find_hull <- function(df) df[chull(df$Dim.1, df$Dim.2), ]
+  hulls <- ddply(ind.coord, "cluster", find_hull)
+  output$pcakmean = renderPlotly(ggplotly(ggplot(data = ind.coord, aes(x = Dim.1, y = Dim.2,
+                                                            colour = cluster, fill=cluster,text = Species)) + geom_point() +
+                                 geom_polygon(data = hulls, alpha = 0.5)+
+                                 theme_light()
+  ))
   
 }
 

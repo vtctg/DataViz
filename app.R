@@ -38,6 +38,10 @@ snowicefeb <- read.csv("snowicefeb.csv")
 seatemp <- read.csv("seatempfeb.csv")
 snowlevels <- read.csv("sealevels.csv")
 combinetemp = read.csv("combinetemp.csv")
+pt1=read.csv("pt1.csv")
+pt2=read.csv("pt2.csv")
+pt3=read.csv("pt3.csv")
+pt4=read.csv("pt4.csv")
 
 
 
@@ -129,7 +133,7 @@ ui <- dashboardPage(
                                                               locationmode = "country names", color = ~avgtemp, colorscale = "hot",frame = ~Year,
                                                               marker = list(line = list(color = toRGB("white"), width = 2))) %>%
                                                       colorbar(limits = c(-100,90)) %>% layout(
-                                                        title = 'Scaled Global Temperature by Year'))
+                                                        title = 'Scaled Global Temperature with Country Information by Year'))
               )
       
               

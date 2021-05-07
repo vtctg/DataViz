@@ -96,11 +96,13 @@ ui <- dashboardPage(
                            h4(" The below are some descriptions about each section of this app. You can view various data and analysis by clicking the tabs on the left side."),
                            h4("View this app with a high resolution for the best experience."))),
               br(),
-              fluidRow(infoBox(color="green", fill = T, width=7, h3(strong(" Overview", style="font-family:'Verdana'")), " General statistics, correlation graphs and geographical data", icon = icon("poll"))),
-              fluidRow(infoBox(color="navy", fill=T, width=7, h3(strong(" Causes of Global Warming", style="font-family:'Verdana'")), " Visualization and analysis of the sources of global warming", icon = icon("smoking"))
+              fluidRow(infoBox(color="green", fill = T, width=10, h3(strong(" Overview", style="font-family:'Verdana'")), " General statistics, correlation graphs and geographical data", icon = icon("poll"))),
+              fluidRow(infoBox(color="navy", fill=T, width=10, h3(strong(" Causes of Global Warming", style="font-family:'Verdana'")), " Visualization and analysis of the sources of global warming", icon = icon("smoking"))
               ),
-              fluidRow(infoBox(color="yellow", fill = T, width=7, h3(strong(" Effects of Global Warming", style="font-family:'Verdana'")), " Visualization and analysis of the problems brought by global warming", icon = icon("temperature-high"))),
-              fluidRow(infoBox(color="fuchsia", fill=T, width=7, h3(strong(" Helping Initiatives", style="font-family:'Verdana'")), " Explores the effect of global agreements on global warming", icon = icon("info-circle"))
+              fluidRow(infoBox(color="red", fill = T, width=10, h3(strong(" Relationship between Countries", style="font-family:'Verdana'")), " Clustering Country data with the information of Population, Electricity generation, Coal consumption and CO2 generation", icon = icon("th"))
+              ),
+              fluidRow(infoBox(color="yellow", fill = T, width=10, h3(strong(" Effects of Global Warming", style="font-family:'Verdana'")), " Visualization and analysis of the problems brought by global warming", icon = icon("temperature-high"))),
+              fluidRow(infoBox(color="fuchsia", fill=T, width=10, h3(strong(" Helping Initiatives", style="font-family:'Verdana'")), " Explores the effect of global agreements on global warming", icon = icon("info-circle"))
               )
       ),
       
@@ -299,16 +301,16 @@ ui <- dashboardPage(
               h1("PCA on Country and Country Information", style = "color:yellow;"),
               br(),
               fluidRow(
-                box(status="warning",width=12, matplot(pt1,type="l",main="PC1 proj"))
+                box(status="warning",width = 15, plotOutput("pt1"))
               ),
               fluidRow(
-                box(status="warning",width=12, matplot(pt2,type="l",main="PC2 proj"))
+                box(status="warning",width = 15, plotOutput("pt2"))
               ),
               fluidRow(
-                box(status="warning",width=12, matplot(pt3,type="l",main="PC3 proj"))
+                box(status="warning",width = 15, plotOutput("pt3"))
               ),
               fluidRow(
-                box(status="warning",width=12, matplot(pt4,type="l",main="PC4 proj"))
+                box(status="warning",width = 15, plotOutput("pt4"))
               )
       ),
       
@@ -527,7 +529,10 @@ server <- function(input, output) {
                                  geom_polygon(data = hulls, alpha = 0.5)+
                                  theme_light()
   ))
-  
+  output$pt1 = renderPlot(matplot(pt1,type="l",main="PC1 proj"))
+  output$pt2 = renderPlot(matplot(pt2,type="l",main="PC2 proj"))
+  output$pt3 = renderPlot(matplot(pt3,type="l",main="PC3 proj"))
+  output$pt4 = renderPlot(matplot(pt4,type="l",main="PC4 proj"))
 }
 
 shinyApp(ui, server)

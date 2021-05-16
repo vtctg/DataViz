@@ -587,19 +587,19 @@ ui <- dashboardPage(
     )
     
     output$twoVar = renderPlotly(ggplot(data = mapping[mapping$Year == 2018,], aes_string(x=input$V1, y=input$V2, color="Country")) + geom_point())
-    treeevd$Obs.temp = scale(tree$Obs.temp)
-    treeevd$Ring.width = scale(tree$Ring.width)
-    carbonevd$Temperature = scale(carbon$Temperature)
-    carbonevd$CO2 = scale(carbon$CO2)
+    treeevd$Obs.temp = scale(treeevd$Obs.temp)
+    treeevd$Ring.width = scale(treeevd$Ring.width)
+    carbonevd$Temperature = scale(carbonevd$Temperature)
+    carbonevd$CO2 = scale(carbonevd$CO2)
     
-    output$treeg = renderPlotly(ggplotly(ggplot(tree, aes(x=X))+
+    output$treeg = renderPlotly(ggplotly(ggplot(treeevd, aes(x=X))+
                                            geom_line(aes(y=Obs.temp),color="darkred")+
                                            geom_line(aes(y=Ring.width),color="steelblue")+
                                            geom_smooth(aes(y = Obs.temp),method=lm, color="red", fill="#69b3a2",se=TRUE)+
                                            xlab("Year")+
                                            ylab("Standardized Data")+
                                            labs(title="Tree Ring Width and Temperature against Year")))
-    output$carbong = renderPlotly(ggplotly(ggplot(carbon, aes(x=BP))+
+    output$carbong = renderPlotly(ggplotly(ggplot(carbonevd, aes(x=BP))+
                                              geom_line(aes(y=Temperature),color="darkred")+
                                              geom_line(aes(y=CO2),color="steelblue")+
                                              geom_smooth(aes(y = CO2),method=lm, color="red", fill="#69b3a2",se=TRUE)+

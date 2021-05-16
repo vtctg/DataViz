@@ -51,6 +51,7 @@ treeevd = read.csv("Dimmie.csv")
 
 
 
+
 get_lower_tri<-function(cormat){
   cormat[lower.tri(cormat)] <- NA
   return(cormat)
@@ -327,14 +328,18 @@ ui <- dashboardPage(
               tabItem(tabName = "pca",
                       h1("PCA on Country and Country Information", style = "color:yellow;"),
                       br(),
-                      fluidRow(
-                        box(status="warning",width=6, plotOutput("graph1"))
-                        ,box(status="warning",width=6, plotOutput("graph2"))
-                      ),
-                      fluidRow(
-                        box(status="warning",width=6, plotOutput("graph3"))
-                        ,box(status="warning",width=6, plotOutput("graph4"))
-                      ),
+                      
+                      fluidRow(box(width=5, title = strong("PCA Features",style="font-family:'Verdana'"),status = "info",solidHeader = TRUE,
+                                   radioButtons("pcaf", label = "Select PCA:",
+                                   c("PCA1"="graph1", 
+                                                  "PCA2"="graph2",
+                                                  "PCA3"="graph3",
+                                                  "PCA4"="graph4")),
+                                   ),
+                               box(width = 7, plotOutput("pcaproj"))),
+                      h3("PCA biplot showing how variables relate to others"),
+                      br(),
+                      fluidRow(box(width=7, plotlyOutput("pcabiplot")))
               ),
               
               tabItem(tabName = "handkpca",
@@ -572,10 +577,14 @@ ui <- dashboardPage(
                                               theme_light()
     ))
     
-    output$graph1 = renderPlot(matplot(pt1,type="l",main="PC1 proj"))
-    output$graph2 = renderPlot(matplot(pt2,type="l",main="PC2 proj"))
-    output$graph3 = renderPlot(matplot(pt3,type="l",main="PC3 proj"))
-    output$graph4 = renderPlot(matplot(pt4,type="l",main="PC4 proj"))
+    output$pcaproj = renderPlot({
+      switch(input$pcaf,
+             "graph1"=matplot(pt1,type="l",main="PC1 proj"),
+             "graph2"=matplot(pt2,type="l",main="PC2 proj"),
+             "graph3"=matplot(pt3,type="l",main="PC3 proj"),
+             "graph4"=matplot(pt4,type="l",main="PC4 proj"),
+             )}
+    )
     
     output$twoVar = renderPlotly(ggplot(data = mapping[mapping$Year == 2018,], aes_string(x=input$V1, y=input$V2, color="Country")) + geom_point())
     treeevd$Obs.temp = scale(tree$Obs.temp)
@@ -597,7 +606,7 @@ ui <- dashboardPage(
                                              xlab("BP_Year")+
                                              ylab("Standardized Data")+
                                              labs(title="CO2 in Ice Core and Temperature against Year")))
-    
+    output$pcabiplot = renderPlotly(ggplotly(ggbiplot(pca_2018,ellipse = TRUE, labels=rownames(pca_2018))))
   }
   
   shinyApp(ui, server)

@@ -10,6 +10,9 @@ library(tidyverse)
 library(gridExtra)
 library(stats)
 library(ggpubr)
+library(devtools)
+install_github("vqv/ggbiplot")
+library(ggbiplot)
 
 
 oDs <- read_csv("ozone-depleting-substance-emissions .csv")

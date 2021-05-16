@@ -1,4 +1,4 @@
-setwd("D:/Github/DataViz")
+#setwd("D:/Github/DataViz")
 library(shiny)
 library(shinydashboard)
 library(dashboardthemes)
@@ -425,7 +425,7 @@ ui <- dashboardPage(
       
       tabItem(tabName = "measures",
               
-              
+              img(src="MEAs.jpg",width="50%" ,height="50%"),
               fluidRow(box(width=12,status="warning",
                            ggplotly(ggplot(data=nopeA, aes(x=Year, y=`#Parties`, color = Name)) + geom_line() + ggtitle("Number of parties joining various international agreements")+ theme_light() ),
                            h6("Source: UNCTAD Development and Globalization: Facts and Figures (2016). United Nations Conference on Trade and Development. http://stats.unctad.org/Dgff2016/index.html"))

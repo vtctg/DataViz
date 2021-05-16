@@ -155,7 +155,13 @@ ui <- dashboardPage(
                                                                 "Energy (TWh)" = "Energy"),
                                                  selected = "Temperature")),
                                 
-                                box(width=7, status="warning",plotlyOutput("coR"))
+                                box(width=7, status="warning",plotlyOutput("coR"),
+                                    h6("Source:"),
+                                    h6("Hegglin, M. I., Fahey, D. W., McFarland, M., Montzka, S. A., & Nash, E. R. 2018. Twenty questions and answers about the ozone layer. World Meteorological Organization, UNEP, NOAA, NASA, and European Commission."),
+                                    h6("Climate Watch. 2016. CAIT Climate Data Explorer. https://www.climatewatchdata.org/data-explorer/historical-emissions?historical-emissions-data-sources=cait&historical-emissions-gases=all-ghg&historical-emissions-regions=All%20Selected&historical-emissions-sectors=total-including-lucf"),
+                                    h6("Vaclav Smil. 2017. Energy Transitions: Global and National Perspectives. & BP Statistical Review of World Energy."),
+                                    h6("Gapminder. 2019. Total Population. http://gapm.io/dpop"),
+                                    h6("The National Aeronautics and Space Administration. 2021. Global Temperature | Vital Signs - Climate Change: Vital Signs of the Planet. https://climate.nasa.gov/vital-signs/global-temperature/"))
                                 
                        ),
                        fluidRow(box(width = 7,status="warning",ggplotly(ggplot(data = melted_cormat, aes(Var2, Var1, fill = value))+
@@ -175,12 +181,10 @@ ui <- dashboardPage(
       tabItem(tabName = "evid",
               h1("Data of Tree Ring Width and CO2 in Ice Core",style = "color:yellow;"),
               br(),
-              h3("Tree Ring Width indicate the climate and growing evironment of trees"),
+              h3("Tree ring width indicates the climate and growing environment of trees, CO2 value in ice core indicates the CO2 concentration at that year",style = "color:yellow;"),
               br(),
-              fluidRow(width=7,status="warning",plotlyOutput("treeg")),
-              br(),
-              h3("CO2 value in Ice Core indicate the CO2 concentration at that Year"),
-              fluidRow(width=7,status="warning",plotlyOutput("carbong"))
+              fluidRow(box(status="warning",plotlyOutput("treeg")),
+              box(status="warning",plotlyOutput("carbong")))
       ),
       
       
@@ -230,8 +234,8 @@ ui <- dashboardPage(
                             h5("Source: Wuebbles, D.J. 2015. OZONE DEPLETION AND RELATED TOPICS | Ozone Depletion Potentials. in North, G.R., Pyle, J., & Zhang, F. 2015.Encyclopedia of Atmospheric Sciences (Second Edition)"))
                       ),
                       
-                      fluidRow(box(status="warning",ggplotly(ggplot(data=Soc,aes(x=Year,y=`Mean daily concentration (NASA)`)) + geom_line() + geom_smooth(color = "#FF000088")+labs(x="Year", y="Dobson Unit (DU)", title="Annual mean Stratospheric ozone concentration")+ theme_light() ),h6("Source: NASA. NASA Ozone Hole Watch. 2020. https://ozonewatch.gsfc.nasa.gov/meteorology/annual_data.html")),
-                               box(status="warning",ggplotly(ggplot(data=aHa,aes(x=Year,y=`Mean ozone hole area`)) + geom_line() + geom_smooth(color = "#FF000088") + labs(x="Year", y="squared km", title="Annual mean Antarctic ozone hole area")+ theme_light() ),h6("Source: NASA. NASA Ozone Hole Watch. 2020. https://ozonewatch.gsfc.nasa.gov/meteorology/annual_data.html"))
+                      fluidRow(box(status="warning",ggplotly(ggplot(data=Soc,aes(x=Year,y=`Mean daily concentration (NASA)`)) + geom_line() + geom_smooth(color = "#FF000088")+labs(x="Year", y="Dobson Unit (DU)", title="Annual mean Stratospheric ozone concentration")+ theme_light() ),h6("Source: The National Aeronautics and Space Administration. 2020. NASA Ozone Hole Watch. https://ozonewatch.gsfc.nasa.gov/meteorology/annual_data.html")),
+                               box(status="warning",ggplotly(ggplot(data=aHa,aes(x=Year,y=`Mean ozone hole area`)) + geom_line() + geom_smooth(color = "#FF000088") + labs(x="Year", y="squared km", title="Annual mean Antarctic ozone hole area")+ theme_light() ),h6("Source: The National Aeronautics and Space Administration. 2020. NASA Ozone Hole Watch. https://ozonewatch.gsfc.nasa.gov/meteorology/annual_data.html"))
                       ),
                       
                       fluidRow(box(status="danger",img(src = "jgrd15685-fig-0004.png",width="100%", height="100%"),
@@ -332,17 +336,19 @@ ui <- dashboardPage(
                       h1("PCA on Country and Country Information", style = "color:yellow;"),
                       br(),
                       
-                      fluidRow(box(width=5, title = strong("PCA Features",style="font-family:'Verdana'"),status = "info",solidHeader = TRUE,
+                      fluidRow(box(width=5, title = strong("Input",style="font-family:'Verdana'"),status = "info",solidHeader = TRUE,
+                                   h4("The right graph shows the PCA feature of countrywise environmental data in 2018, which are visualized in the section \"Grouping of Country\"."),
+                                   br(),
                                    radioButtons("pcaf", label = "Select PCA:",
                                    c("PCA1"="graph1", 
                                                   "PCA2"="graph2",
                                                   "PCA3"="graph3",
                                                   "PCA4"="graph4")),
                                    ),
-                               box(width = 7, plotOutput("pcaproj"))),
-                      h3("PCA biplot showing how variables relate to others"),
+                               box(status="warning",width = 7, plotOutput("pcaproj"))),
+                      h3("PCA biplot showing how variables relate to others",style = "color:yellow;"),
                       br(),
-                      fluidRow(box(width=7, plotlyOutput("pcabiplot")))
+                      fluidRow(box(status="warning",width=7, plotlyOutput("pcabiplot")))
               ),
               
               tabItem(tabName = "handkpca",
@@ -361,7 +367,11 @@ ui <- dashboardPage(
                                                                "Coal consumption (tonnes oil equivalent)" = "coal",
                                                                "CO2 emission (kt, kilotonnes)" = "co2"),
                                                 selected = "population")),
-                               box(width=7, plotlyOutput("twoVar"))),
+                               box(width=7, plotlyOutput("twoVar"),
+                                   h6("Source: (All of the data is collected from Gapminder)"),
+                                   h6("BP public limimted company. 2019. Statistical Review of World Energy. https://www.bp.com/statisticalreview"),
+                                   h6("Gapminder. 2019. Total Population. http://gapm.io/dpop"),
+                                   h6("Carbon Dioxide Information Analysis Center. 2019. ESS-DIVE CDIAC Data Transition. https://cdiac.ess-dive.lbl.gov/"))),
                       br(),
                       h3("K-Means Clustering of Country base on Country Information", style = "color:yellow;"),
                       
@@ -443,7 +453,7 @@ ui <- dashboardPage(
                             h5("*Anomalies are relative to the 20th century (1901-2000) base period average."),
                             h5("Temperature anomalies based annually from February reports.")
                         )),
-                      h3("Ice Melting, Temperatures Warming, Sea Levels Rising", style = "font-family:'times';color:yellow;"),
+                      h3(strong("Ice Melting, Temperatures Warming, Sea Levels Rising", style = "font-family:'times';color:yellow;")),
                       fluidRow(
                         box(status = "primary",title = strong("Our Verdict",style="font-family:'Verdana'"), solidHeader = T, 
                             h4("The graph on the right shows upward trends of sea levels."),

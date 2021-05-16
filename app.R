@@ -98,7 +98,7 @@ ui <- dashboardPage(
               fluidRow(infoBox(color="green", fill = T, width=7, h3(strong(" Overview", style="font-family:'Verdana'")), " General statistics, correlation graphs and geographical data", icon = icon("poll"))),
               fluidRow(infoBox(color="navy", fill=T, width=7, h3(strong(" Causes of Global Warming", style="font-family:'Verdana'")), " Visualization and analysis of the sources of global warming", icon = icon("smoking"))
               ),
-              fluidRow(infoBox(color="fuchsia", fill=T, width=7, h3(strong(" Relationship among countries", style="font-family:'Verdana'")), " Categorizes countries with similar environmental performance", icon = icon("th"))),
+              fluidRow(infoBox(color="teal", fill=T, width=7, h3(strong(" Relationship of countries", style="font-family:'Verdana'")), " Categorizes countries with similar environmental performance", icon = icon("th"))),
               fluidRow(infoBox(color="yellow", fill = T, width=7, h3(strong(" Effects of Global Warming", style="font-family:'Verdana'")), " Visualization and analysis of the problems brought by global warming", icon = icon("temperature-high"))),
               fluidRow(infoBox(color="fuchsia", fill=T, width=7, h3(strong(" Helping Initiatives", style="font-family:'Verdana'")), " Explores the effect of global agreements on global warming", icon = icon("info-circle"))
               ),

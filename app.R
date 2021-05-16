@@ -199,13 +199,14 @@ ui <- dashboardPage(
                                                         "Atmospheric lifetime:" = "AtmosphericLifetime"),
                                          selected = "ODP"),
                             h5("* ODP is measured by the relative potential of ozone depletion to CFC-11"),
-                            h5("* Atmospheric lifetime is measured in years")
+                            h5("* Atmospheric lifetime is measured in years"),
                         )
                         
                       ),
                       br(),
                       fluidRow(
-                        box(status="warning",width=12, plotlyOutput("OZ1"))
+                        box(status="warning",width=12, plotlyOutput("OZ1"), 
+                            h5("Source: Wuebbles, D.J. 2015. OZONE DEPLETION AND RELATED TOPICS | Ozone Depletion Potentials. in North, G.R., Pyle, J., & Zhang, F. 2015.Encyclopedia of Atmospheric Sciences (Second Edition)"))
                       ),
                       
                       fluidRow(box(status="warning",ggplotly(ggplot(data=Soc,aes(x=Year,y=`Mean daily concentration (NASA)`)) + geom_line() + geom_smooth(color = "#FF000088")+labs(x="Year", y="Dobson Unit (DU)", title="Annual mean Stratospheric ozone concentration")+ theme_light() ),h6("Source: NASA. NASA Ozone Hole Watch. 2020. https://ozonewatch.gsfc.nasa.gov/meteorology/annual_data.html")),

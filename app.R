@@ -33,7 +33,7 @@ stratospheric_chorine_concentrations <- read_csv("stratospheric-chorine-concentr
 stratospheric_ozone_concentration_projections <- read_csv("stratospheric-ozone-concentration-projections.csv")
 trendGID <- read_csv("trendGID.csv")
 heatplo=read_csv("correation2.csv")
-mapping = read_csv("OverviewMap.csv",col_types = cols(coal = col_double(),electricity = col_double()))
+#mapping = read_csv("OverviewMap.csv",col_types = cols(coal = col_double(),electricity = col_double()))
 snowicefeb <- read.csv("snowicefeb.csv")
 seatemp <- read.csv("seatempfeb.csv")
 sealevels <- read.csv("sealevels.csv")
@@ -44,6 +44,8 @@ pt3=read.csv("pt3.csv")
 pt4=read.csv("pt4.csv")
 infovalue2018 = read.csv("infovalue2018.csv")
 ind.coord = read.csv("ind_coord.csv")
+carbonevd = read.csv("Epica-tpt-co2.csv")
+treeevd = read.csv("Dimmie.csv")
 
 
 
@@ -63,7 +65,9 @@ ui <- dashboardPage(
   dashboardSidebar(
     sidebarMenu(
       menuItem("Home", tabName = "home", icon = icon("home")),
-      menuItem("Overview", tabName = "stats", icon = icon("poll")),
+      menuItem("Overview", tabName = "view", icon = icon("poll"),
+               menuItem("Environmental Statistics", tabName = "stats"),
+               menuItem("Tree Ring and CO2 in Ice Cores", tabName = "evid")),
       menuItem("Causes of Global Warming", tabName = "causes", icon = icon("smoking"),
                menuItem("Overview", tabName = "OvCau"),
                menuItem("Greenhouse gases", tabName = "ggas"),
@@ -163,6 +167,19 @@ ui <- dashboardPage(
                        
                        
               ),
+      
+      tabItem(tabName = "evid",
+              h1("Data of Tree Ring Width and CO2 in Ice Core",style = "color:yellow;"),
+              br(),
+              h3("Tree Ring Width indicate the climate and growing evironment of trees"),
+              br(),
+              fluidRow(width=7,status="warning",plotlyOutput("treeg")),
+              br(),
+              h3("CO2 value in Ice Core indicate the CO2 concentration at that Year"),
+              fluidRow(width=7,status="warning",plotlyOutput("carbong"))
+      ),
+      
+      
               
               tabItem(tabName = "OvCau",
                       h1("Some Scientific Concepts...", style = "color:yellow;"),
@@ -561,6 +578,25 @@ ui <- dashboardPage(
     output$graph4 = renderPlot(matplot(pt4,type="l",main="PC4 proj"))
     
     output$twoVar = renderPlotly(ggplot(data = mapping[mapping$Year == 2018,], aes_string(x=input$V1, y=input$V2, color="Country")) + geom_point())
+    treeevd$Obs.temp = scale(tree$Obs.temp)
+    treeevd$Ring.width = scale(tree$Ring.width)
+    carbonevd$Temperature = scale(carbon$Temperature)
+    carbonevd$CO2 = scale(carbon$CO2)
+    
+    output$treeg = renderPlotly(ggplotly(ggplot(tree, aes(x=X))+
+                                           geom_line(aes(y=Obs.temp),color="darkred")+
+                                           geom_line(aes(y=Ring.width),color="steelblue")+
+                                           geom_smooth(aes(y = Obs.temp),method=lm, color="red", fill="#69b3a2",se=TRUE)+
+                                           xlab("Year")+
+                                           ylab("Standardized Data")+
+                                           labs(title="Tree Ring Width and Temperature against Year")))
+    output$carbong = renderPlotly(ggplotly(ggplot(carbon, aes(x=BP))+
+                                             geom_line(aes(y=Temperature),color="darkred")+
+                                             geom_line(aes(y=CO2),color="steelblue")+
+                                             geom_smooth(aes(y = CO2),method=lm, color="red", fill="#69b3a2",se=TRUE)+
+                                             xlab("BP_Year")+
+                                             ylab("Standardized Data")+
+                                             labs(title="CO2 in Ice Core and Temperature against Year")))
     
   }
   

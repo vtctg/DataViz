@@ -36,7 +36,7 @@ stratospheric_chorine_concentrations <- read_csv("stratospheric-chorine-concentr
 stratospheric_ozone_concentration_projections <- read_csv("stratospheric-ozone-concentration-projections.csv")
 trendGID <- read_csv("trendGID.csv")
 heatplo=read_csv("correation2.csv")
-#mapping = read_csv("OverviewMap.csv",col_types = cols(coal = col_double(),electricity = col_double()))
+mapping = read_csv("OverviewMap.csv",col_types = cols(coal = col_double(),electricity = col_double()))
 snowicefeb <- read.csv("snowicefeb.csv")
 seatemp <- read.csv("seatempfeb.csv")
 sealevels <- read.csv("sealevels.csv")

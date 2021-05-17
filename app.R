@@ -10,7 +10,7 @@ library(tidyverse)
 library(gridExtra)
 library(stats)
 library(ggpubr)
-library(devtools)
+library(remotes)
 install_github("vqv/ggbiplot")
 library(ggbiplot)
 

@@ -390,7 +390,7 @@ ui <- dashboardPage(
                       h3("Hierarchical Clustering of Country base on Country Information", style = "color:yellow;"),
                       br(),
                       fluidRow(
-                        box( width = 6, status = "danger",
+                        box( width = 8, status = "danger",
                              img(src='hclust.png', align = "center", height="100%", width = "100%")
                         )
                       ),

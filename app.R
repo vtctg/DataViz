@@ -46,6 +46,7 @@ pt2=read.csv("pt2.csv")
 pt3=read.csv("pt3.csv")
 pt4=read.csv("pt4.csv")
 infovalue2018 = read.csv("infovalue2018.csv")
+info2018 = read.csv("info2018.csv")
 ind.coord = read.csv("ind_coord.csv")
 carbonevd = read.csv("Epica-tpt-co2.csv")
 treeevd = read.csv("Dimmie.csv")
@@ -77,8 +78,8 @@ ui <- dashboardPage(
                menuItem("Greenhouse gases", tabName = "ggas"),
                menuItem("Ozone layer depletion", tabName = "oLd")),
       menuItem("Relationship between Country", tabName = "cluster", icon = icon("th"),
-               menuItem("PCA Analysis", tabName = "pca"),
-               menuItem("Grouping of Country", tabName = "handkpca")
+               menuItem("Grouping of Country", tabName = "handkpca"),
+               menuItem("PCA Analysis", tabName = "pca")
       ),
       menuItem("Effects of Global Warming", tabName = "effects", icon = icon("temperature-high")),
       menuItem("Helping Initiatives", tabName = "measures", icon = icon("info-circle"))
@@ -342,7 +343,12 @@ ui <- dashboardPage(
                                box(width = 7, plotOutput("pcaproj"))),
                       h3("PCA biplot showing how variables relate to others"),
                       br(),
-                      fluidRow(box(width=7, plotlyOutput("pcabiplot")))
+                      fluidRow(box(width=7, plotlyOutput("pcabiplot"))),
+                      br(),
+                      h3("K-means Clustering after PCA Dimension Reduction", style = "color:yellow;"),
+                      fluidRow(
+                        box(status="warning",width = 6, plotlyOutput("pcakmean"))
+                      )
               ),
               
               tabItem(tabName = "handkpca",
@@ -363,12 +369,24 @@ ui <- dashboardPage(
                                                 selected = "population")),
                                box(width=7, plotlyOutput("twoVar"))),
                       br(),
-                      h3("K-Means Clustering of Country base on Country Information", style = "color:yellow;"),
-                      
+                      fluidRow(box(width=5, title=strong("Input",style="font-family:'Verdana'"),status="info",solidHeader = TRUE,
+                                   h4("The K-means clustering with selected variables"),
+                                   br(),
+                                   radioButtons("k1", label = "Select x-axis:",
+                                                choices = list("Population" = "Population", 
+                                                               "Electricity generation" = "Electricity_generation",
+                                                               "Coal consumption" = "Coal_consum",
+                                                               "CO2 emission" = "CO2_emmision"),
+                                                selected = "Population"),
+                                   radioButtons("k2", label = "Select y-axis:",
+                                                choices = list("Population" = "Population", 
+                                                               "Electricity generation" = "Electricity_generation",
+                                                               "Coal consumption" = "Coal_consum",
+                                                               "CO2 emission" = "CO2_emmision"),
+                                                selected = "Population")),
+                               box(width=7, plotlyOutput("kmeans"))),
                       br(),
-                      fluidRow(
-                        box(status="warning",width = 6, plotlyOutput("kmean1"))
-                      ),
+                     
                       h3("Hierarchical Clustering of Country base on Country Information", style = "color:yellow;"),
                       br(),
                       fluidRow(
@@ -376,10 +394,7 @@ ui <- dashboardPage(
                              img(src='hclust.png', align = "center", height="100%", width = "100%")
                         )
                       ),
-                      h3("K-means Clustering after PCA Dimension Reduction", style = "color:yellow;"),
-                      fluidRow(
-                        box(status="warning",width = 6, plotlyOutput("pcakmean"))
-                      )
+                      
                       
                       
               ),
@@ -559,17 +574,17 @@ ui <- dashboardPage(
     output$sealevelsplot = renderPlotly(ggplot(data=sealevels,
                                                aes(x=Year, y=SeaLevel)) + labs(y="Sea Level (mm)") + geom_point() +
                                           geom_line(colour="blue") + geom_smooth(color="light green", se=F))
-    km = kmeans(infovalue2018,centers = 4, nstart = 25)
-    output$kmean1 = renderPlotly(ggplotly(factoextra::fviz_cluster(km, data = infovalue2018,
-                                                                   geom = "point",
+    
+    rownames(infovalue2018) = info2018$Country
+    output$kmeans = renderPlotly(ggplotly(factoextra::fviz_cluster(kmeans(subset(infovalue2018,select = c(input$k1,input$k2)),centers = 4, nstart = 25), subset(infovalue2018,select = c(input$k1,input$k2)),
+                                                                   geom = "text",
+                                                                   labelsize = 5,
                                                                    ellipse.type = "convex", 
                                                                    ggtheme = theme_bw(),
                                                                    main = "Brief Clustering of Country"
     )))
     
     pca_2018 = prcomp(infovalue2018, scale = TRUE)
-    pca_2018$rotation = -pca_2018$rotation
-    pca_2018$x = -pca_2018$x
     eigenvalue <- round(factoextra::get_eigenvalue(pca_2018), 1)
     variance.percent <- eigenvalue$variance.percent
     find_hull <- function(df) df[chull(df$Dim.1, df$Dim.2), ]

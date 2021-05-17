@@ -178,10 +178,12 @@ ui <- dashboardPage(
               br(),
               h3("Tree Ring Width indicate the climate and growing evironment of trees", style = "color:yellow;"),
               br(),
-              fluidRow(width=7,status="warning",plotlyOutput("treeg")),
+              fluidRow(box(width=9,status="warning",plotlyOutput("treeg"),
+                           h6("Source: Climate Data Information. Proxies - Data Downloads. (n.d.). http://www.climatedata.info/proxies/data-downloads/"))),
               br(),
               h3("CO2 value in Ice Core indicate the CO2 concentration at that Year", style = "color:yellow;"),
-              fluidRow(width=7,status="warning",plotlyOutput("carbong"))
+              fluidRow(box(width=9,status="warning",plotlyOutput("carbong"),
+                           h6("Source: Climate Data Information. Proxies - Data Downloads. (n.d.). http://www.climatedata.info/proxies/data-downloads/")))
       ),
       
       

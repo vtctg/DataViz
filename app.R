@@ -342,17 +342,13 @@ ui <- dashboardPage(
                                    ),
                                box(width = 7, plotOutput("pcaproj"))),
                       h3("PCA biplot showing how variables relate to others"),
-
                       br(),
                       fluidRow(box(width=7, plotlyOutput("pcabiplot"))),
                       br(),
                       h3("K-means Clustering after PCA Dimension Reduction", style = "color:yellow;"),
                       fluidRow(
                         box(status="warning",width = 6, plotlyOutput("pcakmean"))
-                      ),
-                      br(),
-                      fluidRow(box(width=7, plotlyOutput("pcabiplot")))
-
+                      )
               ),
               
               tabItem(tabName = "handkpca",
@@ -394,7 +390,7 @@ ui <- dashboardPage(
                       h3("Hierarchical Clustering of Country base on Country Information", style = "color:yellow;"),
                       br(),
                       fluidRow(
-                        box( width = 6, status = "danger",
+                        box( width = 8, status = "danger",
                              img(src='hclust.png', align = "center", height="100%", width = "100%")
                         )
                       ),

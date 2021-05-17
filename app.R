@@ -176,11 +176,11 @@ ui <- dashboardPage(
       tabItem(tabName = "evid",
               h1("Data of Tree Ring Width and CO2 in Ice Core",style = "color:yellow;"),
               br(),
-              h3("Tree Ring Width indicate the climate and growing evironment of trees"),
+              h3("Tree Ring Width indicate the climate and growing evironment of trees", style = "color:yellow;"),
               br(),
               fluidRow(width=7,status="warning",plotlyOutput("treeg")),
               br(),
-              h3("CO2 value in Ice Core indicate the CO2 concentration at that Year"),
+              h3("CO2 value in Ice Core indicate the CO2 concentration at that Year", style = "color:yellow;"),
               fluidRow(width=7,status="warning",plotlyOutput("carbong"))
       ),
       
@@ -341,13 +341,17 @@ ui <- dashboardPage(
                                                   "PCA4"="graph4")),
                                    ),
                                box(width = 7, plotOutput("pcaproj"))),
-                      h3("PCA biplot showing how variables relate to others"),
+                      h3("PCA biplot showing how variables relate to others", style = "color:yellow;"),
                       br(),
-                      fluidRow(box(width=7, plotlyOutput("pcabiplot"))),
+                      fluidRow(box(width=7, plotlyOutput("pcabiplot")),
+                               box(width=5, status = "primary",title = strong("PCA biplot",style="font-family:'Verdana'"), solidHeader = T, h4("The biplot show how the variables have influence on PC1 or PC2. The angle between vector also tells how each variables correlated with each other."),
+                                   )),
                       br(),
                       h3("K-means Clustering after PCA Dimension Reduction", style = "color:yellow;"),
                       fluidRow(
-                        box(status="warning",width = 6, plotlyOutput("pcakmean"))
+                        box(status="warning",width = 6, plotlyOutput("pcakmean")),
+                        box(width=5, status = "primary",title = strong("PCA K-means Clustering",style="font-family:'Verdana'"), solidHeader = T, h4("The plot on right hand side shows the 4 cluster of Countries by turning 4 variables inclusing Population, Coal consumption, CO2 emission, and electricity generation to two dimensions using PCA."),
+                        )
                       )
               ),
               
